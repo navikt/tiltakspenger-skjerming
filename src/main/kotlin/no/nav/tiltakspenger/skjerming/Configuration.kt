@@ -3,7 +3,9 @@ package no.nav.tiltakspenger.skjerming
 import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
 import com.natpryce.konfig.EnvironmentVariables
+import com.natpryce.konfig.Key
 import com.natpryce.konfig.overriding
+import com.natpryce.konfig.stringType
 
 object Configuration {
 
@@ -21,29 +23,38 @@ object Configuration {
     private val otherDefaultProperties = mapOf(
         "application.httpPort" to 8080.toString(),
         "SERVICEUSER_TPTS_USERNAME" to System.getenv("SERVICEUSER_TPTS_USERNAME"),
-        "SERVICEUSER_TPTS_PASSWORD" to System.getenv("SERVICEUSER_TPTS_PASSWORD")
+        "SERVICEUSER_TPTS_PASSWORD" to System.getenv("SERVICEUSER_TPTS_PASSWORD"),
+        "AZURE_APP_CLIENT_ID" to System.getenv("AZURE_APP_CLIENT_ID"),
+        "AZURE_APP_CLIENT_SECRET" to System.getenv("AZURE_APP_CLIENT_SECRET"),
+        "AZURE_APP_WELL_KNOWN_URL" to System.getenv("AZURE_APP_WELL_KNOWN_URL"),
     )
     private val defaultProperties = ConfigurationMap(rapidsAndRivers + otherDefaultProperties)
+
     private val localProperties = ConfigurationMap(
         mapOf(
             "stsUrl" to "",
             "application.profile" to Profile.LOCAL.toString(),
+            "pdlScope" to "api://dev-fss.pdl.pdl-api/.default",
+            "skjermingBaseUrl" to "https://skjermede-personer-pip.dev.intern.nav.no",
         )
     )
     private val devProperties = ConfigurationMap(
         mapOf(
             "stsUrl" to "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
-            "application.profile" to Profile.DEV.toString()
+            "application.profile" to Profile.DEV.toString(),
+            "pdlScope" to "api://dev-fss.pdl.pdl-api/.default",
+            "skjermingBaseUrl" to "https://skjermede-personer-pip.dev.intern.nav.no",
         )
     )
     private val prodProperties = ConfigurationMap(
         mapOf(
             "stsUrl" to "",
-            "application.profile" to Profile.PROD.toString()
+            "application.profile" to Profile.PROD.toString(),
+            "pdlScope" to "api://dev-fss.pdl.pdl-api/.default",
+            "skjermingBaseUrl" to "https://skjermede-personer-pip.intern.nav.no",
         )
     )
 
-    @Suppress("UnusedPrivateMember")
     private fun config() = when (System.getenv("NAIS_CLUSTER_NAME") ?: System.getProperty("NAIS_CLUSTER_NAME")) {
         "dev-fss" ->
             systemProperties() overriding EnvironmentVariables overriding devProperties overriding defaultProperties
@@ -53,6 +64,17 @@ object Configuration {
             systemProperties() overriding EnvironmentVariables overriding localProperties overriding defaultProperties
         }
     }
+
+    data class OauthConfig(
+        val scope: String = config()[Key("pdlScope", stringType)],
+        val clientId: String = config()[Key("AZURE_APP_CLIENT_ID", stringType)],
+        val clientSecret: String = config()[Key("AZURE_APP_CLIENT_SECRET", stringType)],
+        val wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)],
+    )
+
+    data class SkjermingKlientConfig(
+        val baseUrl: String = config()[Key("skjermingBaseUrl", stringType)],
+    )
 }
 
 enum class Profile {

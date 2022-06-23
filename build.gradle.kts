@@ -32,6 +32,7 @@ dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
     implementation("com.natpryce:konfig:1.6.10.0")
 
+    implementation("io.ktor:ktor-client-auth:$ktorVersion")
     implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation-jvm:$ktorVersion")

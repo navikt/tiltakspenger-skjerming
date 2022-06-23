@@ -27,3 +27,8 @@ spec:
     pool: nav-dev
   secureLogs:
     enabled: true
+#  accessPolicy:
+#    outbound:
+#      rules:
+#        - application: clamav
+#          namespace: clamav
