@@ -9,7 +9,7 @@ private val LOG = KotlinLogging.logger {}
 
 fun main() {
     Thread.setDefaultUncaughtExceptionHandler { _, e -> LOG.error(e) { e.message } }
-    
+
     RapidApplication.create(Configuration.rapidsAndRivers).apply {
 
         SkjermingService(

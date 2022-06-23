@@ -49,7 +49,7 @@ class SkjermingService(
         packet["@løsning"] = mapOf(
             BEHOV.SKJERMING to erSkjermet
         )
-        LOG.info { "Sending skjermet: ${erSkjermet}" }
+        LOG.info { "Sending skjermet: $erSkjermet" }
         context.publish(packet.toJson())
     }
 

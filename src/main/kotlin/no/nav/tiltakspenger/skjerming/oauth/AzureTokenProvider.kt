@@ -3,15 +3,15 @@ package no.nav.tiltakspenger.skjerming.oauth
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.client.call.*
-import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
+import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
+import io.ktor.http.Parameters
 import no.nav.tiltakspenger.skjerming.Configuration
-import no.nav.tiltakspenger.skjerming.felles.defaultHttpClient
-import no.nav.tiltakspenger.skjerming.felles.defaultObjectMapper
+import no.nav.tiltakspenger.skjerming.defaultHttpClient
+import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 
 class AzureTokenProvider(
     objectMapper: ObjectMapper = defaultObjectMapper(),
@@ -51,7 +51,6 @@ class AzureTokenProvider(
             return@let it.accessToken
         }
     }
-
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
