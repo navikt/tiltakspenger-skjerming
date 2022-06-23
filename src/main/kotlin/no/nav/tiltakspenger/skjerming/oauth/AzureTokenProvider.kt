@@ -58,5 +58,3 @@ class AzureTokenProvider(
         val tokenEndpoint: String
     )
 }
-
-
