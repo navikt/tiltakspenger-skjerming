@@ -64,7 +64,7 @@ configurations.all {
 }
 
 application {
-    mainClass.set("no.nav.tiltakspenger.skjerming.Application")
+    mainClass.set("no.nav.tiltakspenger.skjerming.ApplicationKt")
 }
 
 java {

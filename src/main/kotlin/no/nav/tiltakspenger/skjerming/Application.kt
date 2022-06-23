@@ -17,11 +17,11 @@ fun main() {
 
         register(object : RapidsConnection.StatusListener {
             override fun onStartup(rapidsConnection: RapidsConnection) {
-                LOG.info { "Starting tiltakspenger-arena" }
+                LOG.info { "Starting tiltakspenger-skjerming" }
             }
 
             override fun onShutdown(rapidsConnection: RapidsConnection) {
-                LOG.info { "Stopping tiltakspenger-arena" }
+                LOG.info { "Stopping tiltakspenger-skjerming" }
                 super.onShutdown(rapidsConnection)
             }
         })

@@ -1,7 +1,7 @@
 tiltakspenger-skjerming
 ================
 
-Håndterer...
+Håndterer oppslag om skjerming
 
 En del av satsningen ["Flere i arbeid – P4"](https://memu.no/artikler/stor-satsing-skal-fornye-navs-utdaterte-it-losninger-og-digitale-verktoy/)
 
