@@ -37,7 +37,7 @@ class SkjermingService(
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
         LOG.info { "Received packet: ${packet.toJson()}" }
         val ident = packet["ident"].asText()
-        val behovId = packet["behovId"].asText()
+        val behovId = packet["@behovId"].asText()
 
         val erSkjermet = runBlocking {
             skjermingKlient.erSkjermetPerson(
