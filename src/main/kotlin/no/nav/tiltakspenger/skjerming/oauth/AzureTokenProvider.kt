@@ -51,10 +51,12 @@ class AzureTokenProvider(
             return@let it.accessToken
         }
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WellKnown(
+        @JsonProperty("token_endpoint")
+        val tokenEndpoint: String
+    )
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class WellKnown(
-    @JsonProperty("token_endpoint")
-    val tokenEndpoint: String
-)
+
