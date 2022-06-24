@@ -1,6 +1,6 @@
 package no.nav.tiltakspenger.skjerming.oauth
 
-interface TokenProvider {
+fun interface TokenProvider {
 
     suspend fun getToken(): String
 }

@@ -26,8 +26,8 @@ class AzureTokenProvider(
 
     override suspend fun getToken(): String {
         val currentToken = tokenCache.token
-        if (currentToken != null && !tokenCache.isExpired()) return currentToken
-        return clientCredentials()
+        return if (currentToken != null && !tokenCache.isExpired()) currentToken
+        else clientCredentials()
     }
 
     private suspend fun wellknown(): WellKnown {

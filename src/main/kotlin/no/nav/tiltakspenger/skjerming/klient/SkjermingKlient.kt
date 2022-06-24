@@ -18,13 +18,11 @@ import io.ktor.http.contentType
 import no.nav.tiltakspenger.skjerming.Configuration
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
-import no.nav.tiltakspenger.skjerming.oauth.AzureTokenProvider
-import no.nav.tiltakspenger.skjerming.oauth.TokenProvider
 
 class SkjermingKlient(
     private val skjermingConfig: Configuration.SkjermingKlientConfig = Configuration.SkjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
-    private val provider: TokenProvider = AzureTokenProvider(),
+    private val getToken: suspend () -> String,
     engine: HttpClientEngine = CIO.create(),
     private val httpClient: HttpClient = defaultHttpClient(
         objectMapper = objectMapper,
@@ -34,7 +32,7 @@ class SkjermingKlient(
             bearer {
                 loadTokens {
                     BearerTokens(
-                        accessToken = provider.getToken(),
+                        accessToken = getToken(),
                         // Refresh token are used in refreshToken method if client gets 401
                         // Should't need this if token expiry is checked first
                         refreshToken = emptyRefreshToken,
