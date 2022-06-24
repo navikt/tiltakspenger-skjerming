@@ -30,7 +30,6 @@ internal class SkjermingKlientTest {
         var actualAuthHeader: String? = null
         val mockEngine = MockEngine { request ->
             actualAuthHeader = request.headers["Authorization"]
-            println("URL er ${request.url}")
             when (request.url.toString()) {
                 "http://localhost:8080/skjermet" -> respond(
                     content = """true""",
@@ -66,7 +65,7 @@ internal class SkjermingKlientTest {
             println("URL er ${request.url}")
             when (request.url.toString()) {
                 "http://localhost:8080/skjermet" -> respond(
-                    content = """true""",
+                    content = "true",
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 )

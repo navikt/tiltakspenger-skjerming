@@ -29,7 +29,7 @@ class SkjermingService(
                 it.requireAllOrAny("@behov", listOf(BEHOV.SKJERMING))
                 it.forbid("@løsning")
                 it.requireKey("@id", "@behovId")
-                it.requireKey("ident")
+                it.demandKey("ident")
             }
         }.register(this)
     }
