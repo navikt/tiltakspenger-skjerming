@@ -22,7 +22,7 @@ import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 class SkjermingKlient(
     private val skjermingConfig: Configuration.SkjermingKlientConfig = Configuration.SkjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
-    private val tokenProviderBlock: () -> String,
+    private val tokenProviderBlock: suspend () -> String,
     engine: HttpClientEngine = CIO.create(),
     private val httpClient: HttpClient = defaultHttpClient(
         objectMapper = objectMapper,
