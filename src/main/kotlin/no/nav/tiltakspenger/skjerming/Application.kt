@@ -17,7 +17,7 @@ fun main() {
 
         SkjermingService(
             rapidsConnection = this,
-            skjermingKlient = SkjermingKlient(tokenProviderBlock = tokenProvider::getToken)
+            skjermingKlient = SkjermingKlient(getToken = tokenProvider::getToken)
         )
 
         register(object : RapidsConnection.StatusListener {

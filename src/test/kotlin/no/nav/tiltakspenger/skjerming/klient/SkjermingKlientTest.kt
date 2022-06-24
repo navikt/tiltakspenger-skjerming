@@ -43,7 +43,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProviderBlock = { accessToken },
+            getToken = { accessToken },
             engine = mockEngine
         )
 
@@ -73,7 +73,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProviderBlock = { accessToken },
+            getToken = { accessToken },
             engine = mockEngine
         )
 
@@ -105,7 +105,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProviderBlock = { accessToken },
+            getToken = { accessToken },
             engine = mockEngine
         )
 
