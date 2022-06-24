@@ -9,6 +9,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.http.Parameters
+import kotlinx.coroutines.runBlocking
 import no.nav.tiltakspenger.skjerming.Configuration
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
@@ -24,10 +25,12 @@ class AzureTokenProvider(
 
     private val tokenCache = TokenCache()
 
-    override suspend fun getToken(): String {
-        val currentToken = tokenCache.token
-        if (currentToken != null && !tokenCache.isExpired()) return currentToken
-        return clientCredentials()
+    override fun getToken(): String {
+        return runBlocking {
+            val currentToken = tokenCache.token
+            if (currentToken != null && !tokenCache.isExpired()) currentToken
+            else clientCredentials()
+        }
     }
 
     private suspend fun wellknown(): WellKnown {

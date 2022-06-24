@@ -21,11 +21,12 @@ import org.junit.jupiter.api.Test
 @Suppress("TooGenericExceptionThrown")
 internal class SkjermingKlientTest {
 
+    companion object {
+        const val accessToken = "woopwoop"
+    }
+
     @Test
     fun `skal inkludere Azure token i header`() {
-
-        val tokenProvider = mockk<TokenProvider>()
-        coEvery { tokenProvider.getToken() } returns "woopwoop"
 
         var actualAuthHeader: String? = null
         val mockEngine = MockEngine { request ->
@@ -42,7 +43,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            provider = tokenProvider,
+            tokenProviderBlock = { accessToken },
             engine = mockEngine
         )
 
@@ -52,14 +53,11 @@ internal class SkjermingKlientTest {
                 behovId = "y"
             )
         }
-        assertEquals("Bearer woopwoop", actualAuthHeader)
+        assertEquals("Bearer $accessToken", actualAuthHeader)
     }
 
     @Test
     fun `skal klare å deserialisere bodyen som returneres`() {
-
-        val tokenProvider = mockk<TokenProvider>()
-        coEvery { tokenProvider.getToken() } returns "woopwoop"
 
         val mockEngine = MockEngine { request ->
             println("URL er ${request.url}")
@@ -75,7 +73,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            provider = tokenProvider,
+            tokenProviderBlock = { accessToken },
             engine = mockEngine
         )
 
@@ -107,7 +105,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            provider = tokenProvider,
+            tokenProviderBlock = { accessToken },
             engine = mockEngine
         )
 

@@ -4,17 +4,20 @@ import mu.KotlinLogging
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
+import no.nav.tiltakspenger.skjerming.oauth.AzureTokenProvider
 
 private val LOG = KotlinLogging.logger {}
 
 fun main() {
     Thread.setDefaultUncaughtExceptionHandler { _, e -> LOG.error(e) { e.message } }
 
+    val tokenProvider = AzureTokenProvider()
+
     RapidApplication.create(Configuration.rapidsAndRivers).apply {
 
         SkjermingService(
             rapidsConnection = this,
-            skjermingKlient = SkjermingKlient()
+            skjermingKlient = SkjermingKlient(tokenProviderBlock = tokenProvider::getToken)
         )
 
         register(object : RapidsConnection.StatusListener {
