@@ -56,9 +56,9 @@ object Configuration {
     )
 
     private fun config() = when (System.getenv("NAIS_CLUSTER_NAME") ?: System.getProperty("NAIS_CLUSTER_NAME")) {
-        "dev-fss" ->
+        "dev-gcp" ->
             systemProperties() overriding EnvironmentVariables overriding devProperties overriding defaultProperties
-        "prod-fss" ->
+        "prod-gcp" ->
             systemProperties() overriding EnvironmentVariables overriding prodProperties overriding defaultProperties
         else -> {
             systemProperties() overriding EnvironmentVariables overriding localProperties overriding defaultProperties
