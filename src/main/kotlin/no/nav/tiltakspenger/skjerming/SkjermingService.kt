@@ -26,10 +26,10 @@ class SkjermingService(
     init {
         River(rapidsConnection).apply {
             validate {
-                it.requireAllOrAny("@behov", listOf(BEHOV.SKJERMING))
+                it.demandAllOrAny("@behov", listOf(BEHOV.SKJERMING))
                 it.forbid("@løsning")
                 it.requireKey("@id", "@behovId")
-                it.interestedIn("ident")
+                it.requireKey("ident")
             }
         }.register(this)
     }
