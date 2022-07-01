@@ -20,7 +20,6 @@ class SkjermingService(
         private val logg = KotlinLogging.logger {}
         private val sikkerlogg = KotlinLogging.logger("tjenestekall")
 
-
         internal object BEHOV {
             const val SKJERMING = "skjerming"
         }
@@ -107,5 +106,7 @@ class SkjermingService(
         logg.info { "meldingen validerte ikke: $problems" }
     }
 
-    override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {}
+    @Suppress("EmptyFunctionBlock")
+    override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
+    }
 }
