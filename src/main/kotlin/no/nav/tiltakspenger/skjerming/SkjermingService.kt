@@ -1,7 +1,9 @@
 package no.nav.tiltakspenger.skjerming
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
+import mu.withLoggingContext
 import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
@@ -77,27 +79,32 @@ class SkjermingService(
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        runCatching {
-            loggVedInngang(packet)
-            val ident = packet["ident"].asText()
-            val behovId = packet["@behovId"].asText()
-            sikkerlogg.debug { "mottok ident $ident" }
+        withLoggingContext(
+            "id" to packet["@id"].asText(),
+            "behovId" to packet["@behovId"].asText()
+        ) {
+            runCatching {
+                loggVedInngang(packet)
+                val ident = packet["ident"].asText()
+                val behovId = packet["@behovId"].asText()
+                sikkerlogg.debug { "mottok ident $ident" }
 
-            val erSkjermet = runBlocking {
-                skjermingKlient.erSkjermetPerson(
-                    fødselsnummer = ident,
-                    behovId = behovId,
+                val erSkjermet = runBlocking(MDCContext()) {
+                    skjermingKlient.erSkjermetPerson(
+                        fødselsnummer = ident,
+                        behovId = behovId,
+                    )
+                }
+
+                packet["@løsning"] = mapOf(
+                    BEHOV.SKJERMING to erSkjermet
                 )
-            }
-
-            packet["@løsning"] = mapOf(
-                BEHOV.SKJERMING to erSkjermet
-            )
-            loggVedUtgang(packet) { "$erSkjermet" }
-            context.publish(packet.toJson())
-        }.onFailure {
-            loggVedFeil(it, packet)
-        }.getOrThrow()
+                loggVedUtgang(packet) { "$erSkjermet" }
+                context.publish(packet.toJson())
+            }.onFailure {
+                loggVedFeil(it, packet)
+            }.getOrThrow()
+        }
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {

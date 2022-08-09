@@ -29,6 +29,7 @@ dependencies {
     implementation("com.github.navikt:rapids-and-rivers:2022061809451655538329.d6deccc62862")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.6.4")
     implementation("org.jetbrains:annotations:23.0.0")
     implementation("com.natpryce:konfig:1.6.10.0")
 
