@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import mu.withLoggingContext
-import net.logstash.logback.argument.StructuredArguments.keyValue
+import net.logstash.logback.argument.StructuredArguments
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.MessageProblems
@@ -38,73 +38,35 @@ class SkjermingService(
         }.register(this)
     }
 
-    fun loggVedInngang(packet: JsonMessage) {
-        LOG.info(
-            "løser behov med id {} og korrelasjonsid {}",
-            keyValue("id", packet["@id"].asText()),
-            keyValue("behovId", packet["@behovId"].asText())
-        )
-        SECURELOG.info(
-            "løser behov med id {} og korrelasjonsid {}",
-            keyValue("id", packet["@id"].asText()),
-            keyValue("behovId", packet["@behovId"].asText())
-        )
-        SECURELOG.debug { "mottok melding: ${packet.toJson()}" }
-    }
-
-    private fun loggVedUtgang(packet: JsonMessage, løsning: () -> String) {
-        LOG.info(
-            "har løst behov med id {} og korrelasjonsid {}",
-            keyValue("id", packet["@id"].asText()),
-            keyValue("behovId", packet["@behovId"].asText())
-        )
-        SECURELOG.info(
-            "har løst behov med id {} og korrelasjonsid {}",
-            keyValue("id", packet["@id"].asText()),
-            keyValue("behovId", packet["@behovId"].asText())
-        )
-        SECURELOG.debug { "publiserer løsning: $løsning" }
-    }
-
-    private fun loggVedFeil(ex: Throwable, packet: JsonMessage) {
-        LOG.error(
-            "feil ved behandling av behov {}, se securelogs for detaljer",
-            keyValue("id", packet["@id"].asText())
-        )
-        SECURELOG.error(
-            "feil: ${ex.message} ved behandling av behov {}",
-            keyValue("id", packet["@id"].asText()),
-            ex
-        )
-    }
-
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        withLoggingContext(
-            "id" to packet["@id"].asText(),
-            "behovId" to packet["@behovId"].asText()
-        ) {
-            runCatching {
-                loggVedInngang(packet)
+
+        runCatching {
+            loggVedInngang(packet)
+
+            val erSkjermet = withLoggingContext(
+                "id" to packet["@id"].asText(),
+                "behovId" to packet["@behovId"].asText()
+            ) {
                 val ident = packet["ident"].asText()
                 val behovId = packet["@behovId"].asText()
                 SECURELOG.debug { "mottok ident $ident" }
-
-                val erSkjermet = runBlocking(MDCContext()) {
+                runBlocking(MDCContext()) {
                     skjermingKlient.erSkjermetPerson(
                         fødselsnummer = ident,
                         behovId = behovId,
                     )
                 }
+            }
 
-                packet["@løsning"] = mapOf(
-                    BEHOV.SKJERMING to erSkjermet
-                )
-                loggVedUtgang(packet) { "$erSkjermet" }
-                context.publish(packet.toJson())
-            }.onFailure {
-                loggVedFeil(it, packet)
-            }.getOrThrow()
-        }
+            packet["@løsning"] = mapOf(
+                BEHOV.SKJERMING to erSkjermet
+            )
+            loggVedUtgang(packet) { "$erSkjermet" }
+            context.publish(packet.toJson())
+        }.onFailure {
+            loggVedFeil(it, packet)
+        }.getOrThrow()
+
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
@@ -113,5 +75,47 @@ class SkjermingService(
 
     @Suppress("EmptyFunctionBlock")
     override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
+    }
+
+    fun loggVedInngang(packet: JsonMessage) {
+        LOG.info(
+            "løser behov med {} og {}",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.info(
+            "løser behov med {} og {}",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.debug { "mottok melding: ${packet.toJson()}" }
+    }
+
+    private fun loggVedUtgang(packet: JsonMessage, løsning: () -> String) {
+        LOG.info(
+            "har løst behov med {} og {}",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.info(
+            "har løst behov med {} og {}",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.debug { "publiserer løsning: $løsning" }
+    }
+
+    private fun loggVedFeil(ex: Throwable, packet: JsonMessage) {
+        LOG.error(
+            "feil ved behandling av behov med {}, se securelogs for detaljer",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
+        )
+        SECURELOG.error(
+            "feil ${ex.message} ved behandling av behov med {} og {}",
+            StructuredArguments.keyValue("id", packet["@id"].asText()),
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
+            ex
+        )
     }
 }
