@@ -25,7 +25,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
-    implementation("com.github.navikt:rapids-and-rivers:2022061809451655538329.d6deccc62862")
+    implementation("com.github.navikt:rapids-and-rivers:2022072721371658950659.c1e8f7bf35c6")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     implementation("org.slf4j:slf4j-api:1.7.36")
     implementation("org.jetbrains:annotations:23.0.0")
