@@ -12,6 +12,9 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 
+private val LOG = KotlinLogging.logger {}
+private val SECURELOG = KotlinLogging.logger("tjenestekall")
+
 class SkjermingService(
     rapidsConnection: RapidsConnection,
     private val skjermingKlient: SkjermingKlient,
@@ -19,9 +22,6 @@ class SkjermingService(
     River.PacketListener {
 
     companion object {
-        private val logg = KotlinLogging.logger {}
-        private val sikkerlogg = KotlinLogging.logger("tjenestekall")
-
         internal object BEHOV {
             const val SKJERMING = "skjerming"
         }
@@ -39,39 +39,39 @@ class SkjermingService(
     }
 
     fun loggVedInngang(packet: JsonMessage) {
-        logg.info(
+        LOG.info(
             "løser behov med id {} og korrelasjonsid {}",
             keyValue("id", packet["@id"].asText()),
             keyValue("behovId", packet["@behovId"].asText())
         )
-        sikkerlogg.info(
+        SECURELOG.info(
             "løser behov med id {} og korrelasjonsid {}",
             keyValue("id", packet["@id"].asText()),
             keyValue("behovId", packet["@behovId"].asText())
         )
-        sikkerlogg.debug { "mottok melding: ${packet.toJson()}" }
+        SECURELOG.debug { "mottok melding: ${packet.toJson()}" }
     }
 
     private fun loggVedUtgang(packet: JsonMessage, løsning: () -> String) {
-        logg.info(
+        LOG.info(
             "har løst behov med id {} og korrelasjonsid {}",
             keyValue("id", packet["@id"].asText()),
             keyValue("behovId", packet["@behovId"].asText())
         )
-        sikkerlogg.info(
+        SECURELOG.info(
             "har løst behov med id {} og korrelasjonsid {}",
             keyValue("id", packet["@id"].asText()),
             keyValue("behovId", packet["@behovId"].asText())
         )
-        sikkerlogg.debug { "publiserer løsning: $løsning" }
+        SECURELOG.debug { "publiserer løsning: $løsning" }
     }
 
     private fun loggVedFeil(ex: Throwable, packet: JsonMessage) {
-        logg.error(
+        LOG.error(
             "feil ved behandling av behov {}, se securelogs for detaljer",
             keyValue("id", packet["@id"].asText())
         )
-        sikkerlogg.error(
+        SECURELOG.error(
             "feil: ${ex.message} ved behandling av behov {}",
             keyValue("id", packet["@id"].asText()),
             ex
@@ -87,7 +87,7 @@ class SkjermingService(
                 loggVedInngang(packet)
                 val ident = packet["ident"].asText()
                 val behovId = packet["@behovId"].asText()
-                sikkerlogg.debug { "mottok ident $ident" }
+                SECURELOG.debug { "mottok ident $ident" }
 
                 val erSkjermet = runBlocking(MDCContext()) {
                     skjermingKlient.erSkjermetPerson(
@@ -108,7 +108,7 @@ class SkjermingService(
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
-        logg.info { "meldingen validerte ikke: $problems" }
+        LOG.info { "meldingen validerte ikke: $problems" }
     }
 
     @Suppress("EmptyFunctionBlock")
