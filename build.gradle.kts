@@ -7,7 +7,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.0"
     kotlin("plugin.serialization") version "1.7.0"
-    id("io.gitlab.arturbosch.detekt") version "1.20.0"
+    id("io.gitlab.arturbosch.detekt") version "1.21.0"
     id("ca.cutterslade.analyze") version "1.9.0"
 }
 
@@ -52,7 +52,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("io.mockk:mockk:1.12.4")
-    testImplementation("io.mockk:mockk-dsl-jvm:1.12.4")
+    testImplementation("io.mockk:mockk-dsl-jvm:1.12.5")
     testImplementation("org.skyscreamer:jsonassert:1.5.0")
     testImplementation("org.junit-pioneer:junit-pioneer:1.7.1")
     testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
