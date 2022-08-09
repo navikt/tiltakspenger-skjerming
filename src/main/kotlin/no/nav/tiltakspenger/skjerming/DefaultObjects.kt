@@ -12,13 +12,21 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.JacksonConverter
 import java.time.Duration
+import mu.KotlinLogging
+
+private val SECURELOG = KotlinLogging.logger("tjenestekall")
+
+private object SecurelogWrapper : Logger {
+    override fun log(message: String) {
+        SECURELOG.info(message)
+    }
+}
 
 @Suppress("MagicNumber")
 fun defaultHttpClient(
@@ -34,8 +42,9 @@ fun defaultHttpClient(
         requestTimeoutMillis = Duration.ofSeconds(60).toMillis()
         socketTimeoutMillis = Duration.ofSeconds(60).toMillis()
     }
+
     this.install(Logging) {
-        logger = Logger.DEFAULT
+        logger = SecurelogWrapper
         level = LogLevel.ALL
     }
     this.expectSuccess = true

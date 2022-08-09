@@ -6,10 +6,9 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.oauth.AzureTokenProvider
 
+private val LOG = KotlinLogging.logger {}
+private val SECURELOG = KotlinLogging.logger("tjenestekall")
 fun main() {
-    val LOG = KotlinLogging.logger {}
-    val SECURELOG = KotlinLogging.logger("tjenestekall")
-
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
         LOG.error { "Uncaught exception logget i securelog" }
         SECURELOG.error(e) { e.message }
