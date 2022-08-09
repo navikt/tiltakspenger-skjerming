@@ -48,7 +48,6 @@ class SkjermingService(
             keyValue("behovId", packet["@behovId"].asText())
         )
         sikkerlogg.debug { "mottok melding: ${packet.toJson()}" }
-        sikkerlogg.debug { "mottok melding: ${packet.toJson()}" }
     }
 
     private fun loggVedUtgang(packet: JsonMessage, løsning: () -> String) {
@@ -62,14 +61,13 @@ class SkjermingService(
             keyValue("id", packet["@id"].asText()),
             keyValue("behovId", packet["@behovId"].asText())
         )
-        sikkerlogg.info { "publiserer løsning: $løsning" }
+        sikkerlogg.debug { "publiserer løsning: $løsning" }
     }
 
     private fun loggVedFeil(ex: Throwable, packet: JsonMessage) {
         logg.error(
-            "feil: ${ex.message} ved behandling av behov {}",
-            keyValue("id", packet["@id"].asText()),
-            ex
+            "feil ved behandling av behov {}, se securelogs for detaljer",
+            keyValue("id", packet["@id"].asText())
         )
         sikkerlogg.error(
             "feil: ${ex.message} ved behandling av behov {}",
