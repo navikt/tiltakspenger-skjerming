@@ -1,13 +1,19 @@
 package no.nav.tiltakspenger.skjerming
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
+import mu.withLoggingContext
+import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.MessageProblems
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
+
+private val LOG = KotlinLogging.logger {}
+private val SECURELOG = KotlinLogging.logger("tjenestekall")
 
 class SkjermingService(
     rapidsConnection: RapidsConnection,
@@ -16,8 +22,6 @@ class SkjermingService(
     River.PacketListener {
 
     companion object {
-        private val LOG = KotlinLogging.logger {}
-
         internal object BEHOV {
             const val SKJERMING = "skjerming"
         }
@@ -34,30 +38,80 @@ class SkjermingService(
         }.register(this)
     }
 
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        LOG.info { "Received packet: ${packet.toJson()}" }
-        val ident = packet["ident"].asText()
-        val behovId = packet["@behovId"].asText()
-
-        val erSkjermet = runBlocking {
-            skjermingKlient.erSkjermetPerson(
-                fødselsnummer = ident,
-                behovId = behovId,
-            )
-        }
-        LOG.debug { "Received ident $ident" }
-        packet["@løsning"] = mapOf(
-            BEHOV.SKJERMING to erSkjermet
+    fun loggVedInngang(packet: JsonMessage) {
+        LOG.info(
+            "løser behov med id {} og korrelasjonsid {}",
+            keyValue("id", packet["@id"].asText()),
+            keyValue("behovId", packet["@behovId"].asText())
         )
-        LOG.info { "Sending skjermet: $erSkjermet" }
-        context.publish(packet.toJson())
+        SECURELOG.info(
+            "løser behov med id {} og korrelasjonsid {}",
+            keyValue("id", packet["@id"].asText()),
+            keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.debug { "mottok melding: ${packet.toJson()}" }
+    }
+
+    private fun loggVedUtgang(packet: JsonMessage, løsning: () -> String) {
+        LOG.info(
+            "har løst behov med id {} og korrelasjonsid {}",
+            keyValue("id", packet["@id"].asText()),
+            keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.info(
+            "har løst behov med id {} og korrelasjonsid {}",
+            keyValue("id", packet["@id"].asText()),
+            keyValue("behovId", packet["@behovId"].asText())
+        )
+        SECURELOG.debug { "publiserer løsning: $løsning" }
+    }
+
+    private fun loggVedFeil(ex: Throwable, packet: JsonMessage) {
+        LOG.error(
+            "feil ved behandling av behov {}, se securelogs for detaljer",
+            keyValue("id", packet["@id"].asText())
+        )
+        SECURELOG.error(
+            "feil: ${ex.message} ved behandling av behov {}",
+            keyValue("id", packet["@id"].asText()),
+            ex
+        )
+    }
+
+    override fun onPacket(packet: JsonMessage, context: MessageContext) {
+        withLoggingContext(
+            "id" to packet["@id"].asText(),
+            "behovId" to packet["@behovId"].asText()
+        ) {
+            runCatching {
+                loggVedInngang(packet)
+                val ident = packet["ident"].asText()
+                val behovId = packet["@behovId"].asText()
+                SECURELOG.debug { "mottok ident $ident" }
+
+                val erSkjermet = runBlocking(MDCContext()) {
+                    skjermingKlient.erSkjermetPerson(
+                        fødselsnummer = ident,
+                        behovId = behovId,
+                    )
+                }
+
+                packet["@løsning"] = mapOf(
+                    BEHOV.SKJERMING to erSkjermet
+                )
+                loggVedUtgang(packet) { "$erSkjermet" }
+                context.publish(packet.toJson())
+            }.onFailure {
+                loggVedFeil(it, packet)
+            }.getOrThrow()
+        }
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
-        LOG.debug { problems }
+        LOG.info { "meldingen validerte ikke: $problems" }
     }
 
+    @Suppress("EmptyFunctionBlock")
     override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
-        LOG.error { error }
     }
 }
