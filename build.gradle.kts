@@ -22,7 +22,7 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
     implementation("com.github.navikt:rapids-and-rivers:2022061809451655538329.d6deccc62862")
