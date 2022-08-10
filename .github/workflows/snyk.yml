@@ -1,4 +1,4 @@
-name: Vulnerabilities scanning of dependencies
+name: Snyk
 on: push
 jobs:
   security:
