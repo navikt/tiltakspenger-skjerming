@@ -18,8 +18,7 @@ private val SECURELOG = KotlinLogging.logger("tjenestekall")
 class SkjermingService(
     rapidsConnection: RapidsConnection,
     private val skjermingKlient: SkjermingKlient,
-) :
-    River.PacketListener {
+) : River.PacketListener {
 
     companion object {
         internal object BEHOV {
