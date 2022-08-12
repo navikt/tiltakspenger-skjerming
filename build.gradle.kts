@@ -1,6 +1,6 @@
 val javaVersion = JavaVersion.VERSION_17
 val prometheusVersion = "0.15.0"
-val ktorVersion = "2.0.3"
+val ktorVersion = "2.1.0"
 val jacksonVersion = "2.13.3"
 
 plugins {
