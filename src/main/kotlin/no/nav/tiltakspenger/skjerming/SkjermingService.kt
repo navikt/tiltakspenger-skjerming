@@ -101,7 +101,6 @@ class SkjermingService(
             StructuredArguments.keyValue("id", packet["@id"].asText()),
             StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
         )
-        LOG.info { "publiserer løsning: ${packet.toJson()}" }
         SECURELOG.debug { "publiserer løsning: $løsning" }
     }
 
