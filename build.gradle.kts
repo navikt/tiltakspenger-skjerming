@@ -2,6 +2,7 @@ val javaVersion = JavaVersion.VERSION_17
 val prometheusVersion = "0.15.0"
 val ktorVersion = "2.1.0"
 val jacksonVersion = "2.13.3"
+val mockkVersion = "1.12.5"
 
 plugins {
     application
@@ -52,8 +53,8 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.9.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("io.mockk:mockk:1.12.5")
-    testImplementation("io.mockk:mockk-dsl-jvm:1.12.5")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
     testImplementation("org.junit-pioneer:junit-pioneer:1.7.1")
     testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
