@@ -1,6 +1,6 @@
 name: Build, push, and deploy
 
-on: [ push ]
+on: push
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
@@ -47,7 +47,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Notify Slack in case of build failure
-        if: ${{ failure() && (github.ref == 'refs/heads/main') }}
+        if: failure() && github.ref == 'refs/heads/main'
         run: |
           curl -X POST --data-urlencode "payload={ \"attachments\": [{ \"pretext\": \"[${{ github.event.repository.name }}] Build failed :cry:\", \"color\": \"danger\", \"fields\": [ { \"title\": \"Author\", \"value\": \"$AUTHOR\", \"short\": false }, { \"title\": \"Commit\", \"value\": \"<https://github.com/${{ github.repository }}/commit/$GITHUB_SHA|$GITHUB_SHA>\", \"short\": false } ] }] }" $WEBHOOK_URL
         env:
