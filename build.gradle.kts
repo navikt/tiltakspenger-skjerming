@@ -28,7 +28,7 @@ dependencies {
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
     implementation("com.github.navikt:rapids-and-rivers:2022072721371658950659.c1e8f7bf35c6")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
-    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("ch.qos.logback:logback-classic:1.4.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.6.4")
     implementation("org.jetbrains:annotations:23.0.0")
