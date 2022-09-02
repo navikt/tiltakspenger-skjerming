@@ -6,12 +6,14 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.oauth.AzureTokenProvider
 
-private val LOG = KotlinLogging.logger {}
-private val SECURELOG = KotlinLogging.logger("tjenestekall")
 fun main() {
+    System.setProperty("logback.configurationFile", "egenLogback.xml")
+    val log = KotlinLogging.logger {}
+    val securelog = KotlinLogging.logger("tjenestekall")
+
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
-        LOG.error { "Uncaught exception logget i securelog" }
-        SECURELOG.error(e) { e.message }
+        log.error { "Uncaught exception logget i securelog" }
+        securelog.error(e) { e.message }
     }
 
     val tokenProvider = AzureTokenProvider()
@@ -25,11 +27,11 @@ fun main() {
 
         register(object : RapidsConnection.StatusListener {
             override fun onStartup(rapidsConnection: RapidsConnection) {
-                LOG.info { "Starting tiltakspenger-skjerming" }
+                log.info { "Starting tiltakspenger-skjerming" }
             }
 
             override fun onShutdown(rapidsConnection: RapidsConnection) {
-                LOG.info { "Stopping tiltakspenger-skjerming" }
+                log.info { "Stopping tiltakspenger-skjerming" }
                 super.onShutdown(rapidsConnection)
             }
         })
