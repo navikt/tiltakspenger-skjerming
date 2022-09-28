@@ -15,6 +15,7 @@ import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 private val LOG = KotlinLogging.logger {}
 private val SECURELOG = KotlinLogging.logger("tjenestekall")
 
+@Suppress("TooGenericExceptionCaught")
 class SkjermingService(
     rapidsConnection: RapidsConnection,
     private val skjermingKlient: SkjermingKlient,
@@ -38,8 +39,7 @@ class SkjermingService(
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-
-        runCatching {
+        try {
             loggVedInngang(packet)
 
             val erSkjermet = withLoggingContext(
@@ -62,10 +62,10 @@ class SkjermingService(
             )
             loggVedUtgang(packet)
             context.publish(packet.toJson())
-        }.onFailure {
-            loggVedFeil(it, packet)
-        }.getOrThrow()
-
+        } catch (e: Exception) {
+            loggVedFeil(e, packet)
+            throw e
+        }
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
