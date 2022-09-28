@@ -2,6 +2,8 @@ package no.nav.tiltakspenger.skjerming.oauth
 
 import java.time.LocalDateTime
 
+const val SAFETYMARGIN: Long = 60
+
 class TokenCache {
     var token: String? = null
         private set
@@ -11,6 +13,6 @@ class TokenCache {
 
     fun update(accessToken: String, expiresIn: Long) {
         token = accessToken
-        expires = LocalDateTime.now().plusSeconds(expiresIn)
+        expires = LocalDateTime.now().plusSeconds(expiresIn).minusSeconds(SAFETYMARGIN)
     }
 }
