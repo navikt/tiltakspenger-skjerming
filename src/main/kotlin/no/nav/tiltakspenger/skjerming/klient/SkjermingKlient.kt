@@ -12,7 +12,7 @@ import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 
 class SkjermingKlient(
-    private val skjermingConfig: Configuration.SkjermingKlientConfig = Configuration.SkjermingKlientConfig(),
+    private val skjermingConfig: SkjermingKlientConfig = Configuration.skjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
     private val getToken: suspend () -> String,
     engine: HttpClientEngine = CIO.create(),
@@ -22,7 +22,6 @@ class SkjermingKlient(
     ) {}
 ) {
     companion object {
-        const val emptyRefreshToken = ""
         const val navCallIdHeader = "Nav-Call-Id"
     }
 
@@ -42,4 +41,8 @@ class SkjermingKlient(
     }
 
     private data class SkjermetDataRequestDTO(val personident: String)
+
+    data class SkjermingKlientConfig(
+        val baseUrl: String,
+    )
 }

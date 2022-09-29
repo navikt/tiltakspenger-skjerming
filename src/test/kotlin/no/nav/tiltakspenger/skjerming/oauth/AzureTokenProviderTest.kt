@@ -1,13 +1,8 @@
 package no.nav.tiltakspenger.skjerming.oauth
 
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.client.engine.mock.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.tiltakspenger.skjerming.Configuration
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -44,7 +39,7 @@ internal class AzureTokenProviderTest {
         val tokenProvider = AzureTokenProvider(
             objectMapper = defaultObjectMapper(),
             engine = mockEngine,
-            config = Configuration.OauthConfig(
+            config = AzureTokenProvider.OauthConfig(
                 wellknownUrl = wellKnownUrl,
                 clientSecret = "opensecret",
                 clientId = "id",

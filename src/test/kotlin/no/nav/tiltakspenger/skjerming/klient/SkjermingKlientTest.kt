@@ -1,17 +1,11 @@
 package no.nav.tiltakspenger.skjerming.klient
 
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.plugins.ServerResponseException
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.client.engine.mock.*
+import io.ktor.client.plugins.*
+import io.ktor.http.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.tiltakspenger.skjerming.Configuration
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import no.nav.tiltakspenger.skjerming.oauth.TokenProvider
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -41,7 +35,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine
@@ -71,7 +65,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine
@@ -103,7 +97,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = Configuration.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine
