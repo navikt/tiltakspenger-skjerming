@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import no.nav.tiltakspenger.skjerming.Configuration
@@ -15,7 +14,7 @@ class SkjermingKlient(
     private val skjermingConfig: SkjermingKlientConfig = Configuration.skjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
     private val getToken: suspend () -> String,
-    engine: HttpClientEngine = CIO.create(),
+    engine: HttpClientEngine? = null,
     private val httpClient: HttpClient = defaultHttpClient(
         objectMapper = objectMapper,
         engine = engine
