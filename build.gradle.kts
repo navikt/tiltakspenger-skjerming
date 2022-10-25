@@ -1,13 +1,12 @@
 val javaVersion = JavaVersion.VERSION_17
 val prometheusVersion = "0.15.0"
-val ktorVersion = "2.1.1"
+val ktorVersion = "2.1.2"
 val jacksonVersion = "2.13.4"
 val mockkVersion = "1.13.2"
 
 plugins {
     application
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("jvm") version "1.7.20"
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
     id("ca.cutterslade.analyze") version "1.9.0"
 }
@@ -26,14 +25,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
-    implementation("com.github.navikt:rapids-and-rivers:2022092314391663936769.9d5d33074875")
+    implementation("com.github.navikt:rapids-and-rivers:2022100711511665136276.49acbaae4ed4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.6.4")
     implementation("org.jetbrains:annotations:23.0.0")
     implementation("com.natpryce:konfig:1.6.10.0")
 
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
-    implementation("ch.qos.logback:logback-classic:1.4.1")
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
+    implementation("ch.qos.logback:logback-classic:1.4.4")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.2")
     
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
     implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
