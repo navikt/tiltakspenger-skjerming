@@ -42,26 +42,26 @@ class SkjermingService(
         try {
             loggVedInngang(packet)
 
-            val erSkjermet = withLoggingContext(
+            withLoggingContext(
                 "id" to packet["@id"].asText(),
                 "behovId" to packet["@behovId"].asText()
             ) {
                 val ident = packet["ident"].asText()
                 val behovId = packet["@behovId"].asText()
                 SECURELOG.debug { "mottok ident $ident" }
-                runBlocking(MDCContext()) {
+                val erSkjermet = runBlocking(MDCContext()) {
                     skjermingKlient.erSkjermetPerson(
                         fødselsnummer = ident,
                         behovId = behovId,
                     )
                 }
-            }
 
-            packet["@løsning"] = mapOf(
-                BEHOV.SKJERMING to erSkjermet
-            )
-            loggVedUtgang(packet)
-            context.publish(packet.toJson())
+                packet["@løsning"] = mapOf(
+                    BEHOV.SKJERMING to erSkjermet
+                )
+                loggVedUtgang(packet)
+                context.publish(ident, packet.toJson())
+            }
         } catch (e: Exception) {
             loggVedFeil(e, packet)
             throw e
