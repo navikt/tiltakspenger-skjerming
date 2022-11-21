@@ -7,7 +7,7 @@ val mockkVersion = "1.13.2"
 plugins {
     application
     kotlin("jvm") version "1.7.21"
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
     id("ca.cutterslade.analyze") version "1.9.0"
 }
 
