@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.ktor.client.*
@@ -71,4 +72,5 @@ fun defaultObjectMapper(): ObjectMapper = ObjectMapper()
             indentObjectsWith(DefaultIndenter("  ", "\n"))
         }
     )
-    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
