@@ -3,6 +3,8 @@ val prometheusVersion = "0.15.0"
 val ktorVersion = "2.2.2"
 val jacksonVersion = "2.14.1"
 val mockkVersion = "1.13.3"
+val kotestVersion = "5.5.4"
+val felleslibVersion = "0.0.16"
 
 plugins {
     application
@@ -25,6 +27,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
+    implementation("com.github.navikt.tiltakspenger-libs:skjerming-dtos:$felleslibVersion")
     implementation("com.github.navikt:rapids-and-rivers:2022122311551671792919.2bdd972d7bdb")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.6.4")
     implementation("org.jetbrains:annotations:24.0.0")
@@ -59,6 +62,9 @@ dependencies {
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
     testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")
     testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
+    testImplementation("io.kotest:kotest-extensions:$kotestVersion")
 }
 
 configurations.all {

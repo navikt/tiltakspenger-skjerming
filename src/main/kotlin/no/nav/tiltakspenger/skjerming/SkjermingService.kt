@@ -10,6 +10,9 @@ import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.MessageProblems
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.tiltakspenger.libs.skjerming.SkjermingDTO
+import no.nav.tiltakspenger.libs.skjerming.SkjermingPersonDTO
+import no.nav.tiltakspenger.libs.skjerming.SkjermingResponsDTO
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 
 private val LOG = KotlinLogging.logger {}
@@ -34,6 +37,7 @@ class SkjermingService(
                 it.forbid("@løsning")
                 it.requireKey("@id", "@behovId")
                 it.requireKey("ident")
+                it.interestedIn("barn")
             }
         }.register(this)
     }
@@ -47,17 +51,36 @@ class SkjermingService(
                 "behovId" to packet["@behovId"].asText()
             ) {
                 val ident = packet["ident"].asText()
+                val barn = packet["barn"].map { it.asText() }
                 val behovId = packet["@behovId"].asText()
-                SECURELOG.debug { "mottok ident $ident" }
-                val erSkjermet = runBlocking(MDCContext()) {
-                    skjermingKlient.erSkjermetPerson(
-                        fødselsnummer = ident,
-                        behovId = behovId,
+                SECURELOG.debug { "mottok ident $ident og barn $barn" }
+
+                val respons = runBlocking(MDCContext()) {
+                    SkjermingResponsDTO(
+                        skjermingForPersoner = SkjermingDTO(
+                            søker = SkjermingPersonDTO(
+                                ident = ident,
+                                skjerming = skjermingKlient.erSkjermetPerson(
+                                    fødselsnummer = ident,
+                                    behovId = behovId,
+                                )
+                            ),
+                            barn = barn.map {
+                                SkjermingPersonDTO(
+                                    ident = it,
+                                    skjerming = skjermingKlient.erSkjermetPerson(
+                                        fødselsnummer = it,
+                                        behovId = behovId,
+                                    )
+                                )
+                            },
+                        ),
+                        feil = null,
                     )
                 }
 
                 packet["@løsning"] = mapOf(
-                    BEHOV.SKJERMING to erSkjermet
+                    BEHOV.SKJERMING to respons
                 )
                 loggVedUtgang(packet)
                 context.publish(ident, packet.toJson())
