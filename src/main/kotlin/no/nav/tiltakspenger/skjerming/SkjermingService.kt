@@ -18,7 +18,6 @@ import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 private val LOG = KotlinLogging.logger {}
 private val SECURELOG = KotlinLogging.logger("tjenestekall")
 
-@Suppress("TooGenericExceptionCaught")
 class SkjermingService(
     rapidsConnection: RapidsConnection,
     private val skjermingKlient: SkjermingKlient,
@@ -95,7 +94,6 @@ class SkjermingService(
         LOG.info { "meldingen validerte ikke: $problems" }
     }
 
-    @Suppress("EmptyFunctionBlock")
     override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
     }
 

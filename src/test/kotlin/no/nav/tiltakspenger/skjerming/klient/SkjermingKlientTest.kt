@@ -1,8 +1,13 @@
 package no.nav.tiltakspenger.skjerming.klient
 
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.*
-import io.ktor.http.*
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -12,7 +17,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
-@Suppress("TooGenericExceptionThrown")
 internal class SkjermingKlientTest {
 
     companion object {
@@ -31,6 +35,7 @@ internal class SkjermingKlientTest {
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 )
+
                 else -> throw RuntimeException("Should not happen")
             }
         }
@@ -61,6 +66,7 @@ internal class SkjermingKlientTest {
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 )
+
                 else -> throw RuntimeException("Should not happen")
             }
         }
@@ -93,6 +99,7 @@ internal class SkjermingKlientTest {
                     status = HttpStatusCode.InternalServerError,
                     headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 )
+
                 else -> throw RuntimeException("Should not happen")
             }
         }

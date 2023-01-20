@@ -47,7 +47,7 @@ class LoggingMDCTest {
 
     @Test
     fun `manuell test av structured arguments kombinert med mdc`() {
-        //Structured arguments loggges på samme måte som MDC verdier, så å ha begge deler blir smør på flesk..
+        // Structured arguments loggges på samme måte som MDC verdier, så å ha begge deler blir smør på flesk..
         withLoggingContext("foo" to "bar") {
             runBlocking(MDCContext()) {
                 LOG.info(

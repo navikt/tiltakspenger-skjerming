@@ -70,7 +70,7 @@ internal class SkjermingServiceTest {
                   }
               }
             }
-            """.trimIndent()
+    """.trimIndent()
 
     private val behovMelding = """
         {

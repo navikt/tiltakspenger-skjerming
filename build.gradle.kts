@@ -9,7 +9,7 @@ val felleslibVersion = "0.0.16"
 plugins {
     application
     kotlin("jvm") version "1.8.0"
-    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("com.diffplug.spotless") version "5.0.0"
     id("ca.cutterslade.analyze") version "1.9.0"
 }
 
@@ -36,7 +36,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
     implementation("ch.qos.logback:logback-classic:1.4.5")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
-    
+
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
     implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
@@ -81,10 +81,10 @@ java {
     targetCompatibility = javaVersion
 }
 
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config = files("$projectDir/config/detekt.yml")
+spotless {
+    kotlin {
+        ktlint("0.45.2")
+    }
 }
 
 tasks {
