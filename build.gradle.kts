@@ -4,7 +4,7 @@ val ktorVersion = "2.2.2"
 val jacksonVersion = "2.14.1"
 val mockkVersion = "1.13.3"
 val kotestVersion = "5.5.4"
-val felleslibVersion = "0.0.16"
+val felleslibVersion = "0.0.19"
 
 plugins {
     application
