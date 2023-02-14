@@ -19,10 +19,9 @@ fun main() {
     val tokenProvider = AzureTokenProvider()
 
     RapidApplication.create(Configuration.rapidsAndRivers).apply {
-
         SkjermingService(
             rapidsConnection = this,
-            skjermingKlient = SkjermingKlient(getToken = tokenProvider::getToken)
+            skjermingKlient = SkjermingKlient(getToken = tokenProvider::getToken),
         )
 
         register(object : RapidsConnection.StatusListener {

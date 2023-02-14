@@ -25,7 +25,6 @@ internal class SkjermingKlientTest {
 
     @Test
     fun `skal inkludere Azure token i header`() {
-
         var actualAuthHeader: String? = null
         val mockEngine = MockEngine { request ->
             actualAuthHeader = request.headers["Authorization"]
@@ -33,7 +32,7 @@ internal class SkjermingKlientTest {
                 "http://localhost:8080/skjermet" -> respond(
                     content = """true""",
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
                 )
 
                 else -> throw RuntimeException("Should not happen")
@@ -43,13 +42,13 @@ internal class SkjermingKlientTest {
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
-            engine = mockEngine
+            engine = mockEngine,
         )
 
         runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y"
+                behovId = "y",
             )
         }
         assertEquals("Bearer $accessToken", actualAuthHeader)
@@ -57,14 +56,13 @@ internal class SkjermingKlientTest {
 
     @Test
     fun `skal klare å deserialisere bodyen som returneres`() {
-
         val mockEngine = MockEngine { request ->
             println("URL er ${request.url}")
             when (request.url.toString()) {
                 "http://localhost:8080/skjermet" -> respond(
                     content = "true",
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
                 )
 
                 else -> throw RuntimeException("Should not happen")
@@ -74,13 +72,13 @@ internal class SkjermingKlientTest {
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
-            engine = mockEngine
+            engine = mockEngine,
         )
 
         val erSkjermet = runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y"
+                behovId = "y",
             )
         }
         assertEquals(true, erSkjermet)
@@ -88,7 +86,6 @@ internal class SkjermingKlientTest {
 
     @Test
     fun `skal håndtere InternalServerError`() {
-
         val tokenProvider = mockk<TokenProvider>()
         coEvery { tokenProvider.getToken() } returns "woopwoop"
 
@@ -97,7 +94,7 @@ internal class SkjermingKlientTest {
             when (request.url.toString()) {
                 "http://localhost:8080/skjermet" -> respondError(
                     status = HttpStatusCode.InternalServerError,
-                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
                 )
 
                 else -> throw RuntimeException("Should not happen")
@@ -107,14 +104,14 @@ internal class SkjermingKlientTest {
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
-            engine = mockEngine
+            engine = mockEngine,
         )
 
         assertThrows(ServerResponseException::class.java) {
             runBlocking {
                 client.erSkjermetPerson(
                     fødselsnummer = "x",
-                    behovId = "y"
+                    behovId = "y",
                 )
             }
         }

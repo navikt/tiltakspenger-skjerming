@@ -33,7 +33,7 @@ class LoggingMDCTest {
                         LOG.info(
                             "Sjekk 4.3",
                             StructuredArguments.keyValue("woop", "woop"),
-                            StructuredArguments.keyValue("foo", "bar")
+                            StructuredArguments.keyValue("foo", "bar"),
                         )
                     }
                     LOG.info("Sjekk 4.2")
@@ -52,7 +52,7 @@ class LoggingMDCTest {
             runBlocking(MDCContext()) {
                 LOG.info(
                     "Sjekk her {}", // Logges som "Sjekk her foo=bar"
-                    StructuredArguments.keyValue("foo", "bar")
+                    StructuredArguments.keyValue("foo", "bar"),
                 )
             }
         }
@@ -60,7 +60,7 @@ class LoggingMDCTest {
             runBlocking(MDCContext()) {
                 LOG.info(
                     "Sjekk her {}", // Logges som "Sjekk her foo=bar"
-                    StructuredArguments.keyValue("foo", "bar")
+                    StructuredArguments.keyValue("foo", "bar"),
                 )
             }
         }

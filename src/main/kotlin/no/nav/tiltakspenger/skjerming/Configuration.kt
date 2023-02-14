@@ -38,7 +38,7 @@ object Configuration {
             "application.profile" to Profile.LOCAL.toString(),
             "skjermingScope" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.dev.intern.nav.no",
-        )
+        ),
     )
     private val devProperties = ConfigurationMap(
         mapOf(
@@ -46,7 +46,7 @@ object Configuration {
             "application.profile" to Profile.DEV.toString(),
             "skjermingScope" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.dev.intern.nav.no",
-        )
+        ),
     )
     private val prodProperties = ConfigurationMap(
         mapOf(
@@ -54,7 +54,7 @@ object Configuration {
             "application.profile" to Profile.PROD.toString(),
             "skjermingScope" to "api://prod-gcp.nom.skjermede-personer-pip/.default",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.intern.nav.no",
-        )
+        ),
     )
 
     private fun config() = when (System.getenv("NAIS_CLUSTER_NAME") ?: System.getProperty("NAIS_CLUSTER_NAME")) {
@@ -73,12 +73,12 @@ object Configuration {
         scope: String = config()[Key("skjermingScope", stringType)],
         clientId: String = config()[Key("AZURE_APP_CLIENT_ID", stringType)],
         clientSecret: String = config()[Key("AZURE_APP_CLIENT_SECRET", stringType)],
-        wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)]
+        wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)],
     ) = AzureTokenProvider.OauthConfig(
         scope = scope,
         clientId = clientId,
         clientSecret = clientSecret,
-        wellknownUrl = wellknownUrl
+        wellknownUrl = wellknownUrl,
     )
 
     fun skjermingKlientConfig(baseUrl: String = config()[Key("skjermingBaseUrl", stringType)]) =

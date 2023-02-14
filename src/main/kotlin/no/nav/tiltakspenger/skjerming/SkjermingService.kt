@@ -47,7 +47,7 @@ class SkjermingService(
 
             withLoggingContext(
                 "id" to packet["@id"].asText(),
-                "behovId" to packet["@behovId"].asText()
+                "behovId" to packet["@behovId"].asText(),
             ) {
                 val ident = packet["ident"].asText()
                 val barn = packet["barn"].map { it.asText() }
@@ -62,7 +62,7 @@ class SkjermingService(
                                 skjerming = skjermingKlient.erSkjermetPerson(
                                     fødselsnummer = ident,
                                     behovId = behovId,
-                                )
+                                ),
                             ),
                             barn = barn.map {
                                 SkjermingPersonDTO(
@@ -70,7 +70,7 @@ class SkjermingService(
                                     skjerming = skjermingKlient.erSkjermetPerson(
                                         fødselsnummer = it,
                                         behovId = behovId,
-                                    )
+                                    ),
                                 )
                             },
                         ),
@@ -79,7 +79,7 @@ class SkjermingService(
                 }
 
                 packet["@løsning"] = mapOf(
-                    BEHOV.SKJERMING to respons
+                    BEHOV.SKJERMING to respons,
                 )
                 loggVedUtgang(packet)
                 context.publish(ident, packet.toJson())
@@ -101,12 +101,12 @@ class SkjermingService(
         LOG.info(
             "løser behov med {} og {}",
             StructuredArguments.keyValue("id", packet["@id"].asText()),
-            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
         )
         SECURELOG.info(
             "løser behov med {} og {}",
             StructuredArguments.keyValue("id", packet["@id"].asText()),
-            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
         )
         SECURELOG.debug { "mottok melding: ${packet.toJson()}" }
     }
@@ -115,12 +115,12 @@ class SkjermingService(
         LOG.info(
             "har løst behov med {} og {}",
             StructuredArguments.keyValue("id", packet["@id"].asText()),
-            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
         )
         SECURELOG.info(
             "har løst behov med {} og {}",
             StructuredArguments.keyValue("id", packet["@id"].asText()),
-            StructuredArguments.keyValue("behovId", packet["@behovId"].asText())
+            StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
         )
         SECURELOG.debug { "publiserer melding: ${packet.toJson()}" }
     }
@@ -135,7 +135,7 @@ class SkjermingService(
             "feil ${ex.message} ved behandling av behov med {} og {}",
             StructuredArguments.keyValue("id", packet["@id"].asText()),
             StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
-            ex
+            ex,
         )
     }
 }

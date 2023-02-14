@@ -24,15 +24,19 @@ class AzureTokenProvider(
     private val config: OauthConfig = Configuration.oauthConfig(),
 ) : TokenProvider {
     private val azureHttpClient = defaultHttpClient(
-        objectMapper = objectMapper, engine = engine
+        objectMapper = objectMapper,
+        engine = engine,
     )
 
     private val tokenCache = TokenCache()
 
     override suspend fun getToken(): String {
         val currentToken = tokenCache.token
-        return if (currentToken != null && !tokenCache.isExpired()) currentToken
-        else clientCredentials()
+        return if (currentToken != null && !tokenCache.isExpired()) {
+            currentToken
+        } else {
+            clientCredentials()
+        }
     }
 
     private suspend fun wellknown(): WellKnown {
@@ -47,11 +51,11 @@ class AzureTokenProvider(
                 append("client_id", config.clientId)
                 append("client_secret", config.clientSecret)
                 append("scope", config.scope)
-            }
+            },
         ).body<OAuth2AccessTokenResponse>().let {
             tokenCache.update(
                 it.accessToken,
-                it.expiresIn.toLong()
+                it.expiresIn.toLong(),
             )
             return@let it.accessToken
         }
@@ -85,7 +89,7 @@ class AzureTokenProvider(
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class WellKnown(
         @JsonProperty("token_endpoint")
-        val tokenEndpoint: String
+        val tokenEndpoint: String,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -97,6 +101,6 @@ class AzureTokenProvider(
         @JsonProperty("ext_expires_in")
         val extExpiresIn: Int,
         @JsonProperty("expires_in")
-        val expiresIn: Int
+        val expiresIn: Int,
     )
 }
