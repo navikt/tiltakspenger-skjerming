@@ -30,7 +30,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-          - host: skjermede-personer-pip.intern.nav.no
+          - host: {{ urlSkjerming }}
 #      rules:
 #        - application: clamav
 #          namespace: clamav
