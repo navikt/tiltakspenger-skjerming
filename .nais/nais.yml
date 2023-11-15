@@ -30,7 +30,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-          - host: {{ urlSkjerming }}
+        - host: {{ urlSkjerming }}
 #      rules:
 #        - application: clamav
 #          namespace: clamav
