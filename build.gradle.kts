@@ -3,7 +3,7 @@ val prometheusVersion = "0.15.0"
 val ktorVersion = "2.3.4"
 val jacksonVersion = "2.15.2"
 val mockkVersion = "1.13.8"
-val kotestVersion = "5.6.2"
+val kotestVersion = "5.8.0"
 val felleslibVersion = "0.0.44"
 
 plugins {
