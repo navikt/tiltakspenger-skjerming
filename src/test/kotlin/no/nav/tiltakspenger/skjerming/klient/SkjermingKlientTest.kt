@@ -23,6 +23,8 @@ internal class SkjermingKlientTest {
         const val accessToken = "woopwoop"
     }
 
+    val mockTokenProvider = mockk<TokenProvider>(relaxed = true)
+
     @Test
     fun `skal inkludere Azure token i header`() {
         var actualAuthHeader: String? = null
@@ -41,14 +43,15 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            getToken = { accessToken },
+            tokenProvider = mockTokenProvider,
             engine = mockEngine,
         )
 
         runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y",
+                callId = "y",
+                token = accessToken,
             )
         }
         assertEquals("Bearer $accessToken", actualAuthHeader)
@@ -71,14 +74,15 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            getToken = { accessToken },
+            tokenProvider = mockTokenProvider,
             engine = mockEngine,
         )
 
         val erSkjermet = runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y",
+                callId = "y",
+                token = accessToken,
             )
         }
         assertEquals(true, erSkjermet)
@@ -87,7 +91,7 @@ internal class SkjermingKlientTest {
     @Test
     fun `skal håndtere InternalServerError`() {
         val tokenProvider = mockk<TokenProvider>()
-        coEvery { tokenProvider.getToken() } returns "woopwoop"
+        coEvery { tokenProvider.getAzureToken() } returns "woopwoop"
 
         val mockEngine = MockEngine { request ->
             println("URL er ${request.url}")
@@ -103,7 +107,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            getToken = { accessToken },
+            tokenProvider = mockTokenProvider,
             engine = mockEngine,
         )
 
@@ -111,7 +115,8 @@ internal class SkjermingKlientTest {
             runBlocking {
                 client.erSkjermetPerson(
                     fødselsnummer = "x",
-                    behovId = "y",
+                    callId = "y",
+                    token = accessToken,
                 )
             }
         }

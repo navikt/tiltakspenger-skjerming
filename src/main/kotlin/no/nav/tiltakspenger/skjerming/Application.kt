@@ -16,7 +16,7 @@ import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.security.token.support.v2.RequiredClaims
 import no.nav.security.token.support.v2.tokenValidationSupport
-import no.nav.tiltakspenger.person.auth.TokenProvider
+import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.routes.AzureRoutes
 import no.nav.tiltakspenger.skjerming.routes.TokenxRoutes

@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.person.auth
+package no.nav.tiltakspenger.skjerming.auth
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty

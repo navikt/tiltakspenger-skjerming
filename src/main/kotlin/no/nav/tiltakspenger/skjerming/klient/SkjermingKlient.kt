@@ -12,7 +12,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import no.nav.tiltakspenger.person.auth.TokenProvider
+import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfiguration
