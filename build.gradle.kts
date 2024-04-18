@@ -5,6 +5,7 @@ val jacksonVersion = "2.17.0"
 val mockkVersion = "1.13.10"
 val kotestVersion = "5.8.1"
 val felleslibVersion = "0.0.93"
+val tokenSupportVersion = "4.1.4"
 
 plugins {
     application
@@ -49,7 +50,13 @@ dependencies {
     implementation("io.ktor:ktor-http-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    //Token
+    implementation("no.nav.security:token-client-core:$tokenSupportVersion")
+    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")

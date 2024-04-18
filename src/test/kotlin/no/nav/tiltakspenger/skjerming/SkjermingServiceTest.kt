@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
+import no.nav.tiltakspenger.skjerming.service.SkjermingService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert

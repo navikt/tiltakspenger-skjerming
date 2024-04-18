@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.skjerming
+package no.nav.tiltakspenger.skjerming.service
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
@@ -19,10 +19,9 @@ private val LOG = KotlinLogging.logger {}
 private val SECURELOG = KotlinLogging.logger("tjenestekall")
 
 class SkjermingService(
-    rapidsConnection: RapidsConnection,
+    rapidsConnection: RapidsConnection?,
     private val skjermingKlient: SkjermingKlient,
 ) : River.PacketListener {
-
     companion object {
         internal object BEHOV {
             const val SKJERMING = "skjerming"
@@ -30,7 +29,7 @@ class SkjermingService(
     }
 
     init {
-        River(rapidsConnection).apply {
+        River(rapidsConnection!!).apply {
             validate {
                 it.demandAllOrAny("@behov", listOf(BEHOV.SKJERMING))
                 it.forbid("@løsning")
@@ -59,17 +58,17 @@ class SkjermingService(
                         skjermingForPersoner = SkjermingDTO(
                             søker = SkjermingPersonDTO(
                                 ident = ident,
-                                skjerming = skjermingKlient.erSkjermetPerson(
-                                    fødselsnummer = ident,
-                                    behovId = behovId,
+                                skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
+                                    ident = ident,
+                                    callId = behovId,
                                 ),
                             ),
                             barn = barn.map {
                                 SkjermingPersonDTO(
                                     ident = it,
-                                    skjerming = skjermingKlient.erSkjermetPerson(
-                                        fødselsnummer = it,
-                                        behovId = behovId,
+                                    skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
+                                        ident = ident,
+                                        callId = behovId,
                                     ),
                                 )
                             },
@@ -136,6 +135,43 @@ class SkjermingService(
             StructuredArguments.keyValue("id", packet["@id"].asText()),
             StructuredArguments.keyValue("behovId", packet["@behovId"].asText()),
             ex,
+        )
+    }
+
+    suspend fun hentSkjermingInfoMedAzure(ident: String, barn: List<String>, callId: String): SkjermingResponsDTO {
+        return SkjermingResponsDTO(
+            skjermingForPersoner = SkjermingDTO(
+                søker = SkjermingPersonDTO(
+                    ident = ident,
+                    skjerming = skjermingKlient.hentSkjermingInfoMedAzure(ident, callId),
+                ),
+                barn = barn.map {
+                    SkjermingPersonDTO(
+                        ident = it,
+                        skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
+                            ident = ident,
+                            callId = callId,
+                        ),
+                    )
+                },
+            ),
+        )
+    }
+
+    suspend fun hentSkjermingInfoMedTokenx(ident: String, barn: List<String>, callId: String, subjectToken: String): SkjermingResponsDTO {
+        return SkjermingResponsDTO(
+            skjermingForPersoner = SkjermingDTO(
+                søker = SkjermingPersonDTO(
+                    ident = ident,
+                    skjerming = skjermingKlient.hentSkjermingInfoMedTokenx(ident, callId, subjectToken),
+                ),
+                barn = barn.map {
+                    SkjermingPersonDTO(
+                        ident = it,
+                        skjerming = skjermingKlient.hentSkjermingInfoMedTokenx(ident, callId, subjectToken),
+                    )
+                },
+            ),
         )
     }
 }

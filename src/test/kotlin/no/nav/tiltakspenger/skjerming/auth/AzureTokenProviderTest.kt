@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.skjerming.oauth
+package no.nav.tiltakspenger.skjerming.auth
 
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond

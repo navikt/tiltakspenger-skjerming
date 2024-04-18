@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.skjerming
+package no.nav.tiltakspenger.skjerming.auth
 
 import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
@@ -6,8 +6,8 @@ import com.natpryce.konfig.EnvironmentVariables
 import com.natpryce.konfig.Key
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
+import no.nav.tiltakspenger.person.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
-import no.nav.tiltakspenger.skjerming.oauth.AzureTokenProvider
 
 object Configuration {
 
@@ -36,7 +36,8 @@ object Configuration {
         mapOf(
             "stsUrl" to "",
             "application.profile" to Profile.LOCAL.toString(),
-            "skjermingScope" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
+            "SKJERMING_SCOPE" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
+            "SKJERMING_AUDIENCE" to "",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.intern.dev.nav.no",
         ),
     )
@@ -44,7 +45,8 @@ object Configuration {
         mapOf(
             "stsUrl" to "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
             "application.profile" to Profile.DEV.toString(),
-            "skjermingScope" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
+            "SKJERMING_SCOPE" to "api://dev-gcp.nom.skjermede-personer-pip/.default",
+            "SKJERMING_AUDIENCE" to "",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.intern.dev.nav.no",
         ),
     )
@@ -53,6 +55,7 @@ object Configuration {
             "stsUrl" to "",
             "application.profile" to Profile.PROD.toString(),
             "skjermingScope" to "api://prod-gcp.nom.skjermede-personer-pip/.default",
+            "SKJERMING_AUDIENCE" to "",
             "skjermingBaseUrl" to "https://skjermede-personer-pip.intern.nav.no",
         ),
     )
@@ -69,16 +72,28 @@ object Configuration {
         }
     }
 
-    fun oauthConfig(
-        scope: String = config()[Key("skjermingScope", stringType)],
+    fun oauthzureConfig(
+        scope: String = config()[Key("SKJERMING_SCOPE", stringType)],
         clientId: String = config()[Key("AZURE_APP_CLIENT_ID", stringType)],
         clientSecret: String = config()[Key("AZURE_APP_CLIENT_SECRET", stringType)],
         wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)],
-    ) = AzureTokenProvider.OauthConfig(
+    ) = TokenProvider.OauthAzureConfig(
         scope = scope,
         clientId = clientId,
         clientSecret = clientSecret,
         wellknownUrl = wellknownUrl,
+    )
+
+    fun oauthTokenxConfig(
+        clientId: String = config()[Key("TOKEN_X_CLIENT_ID", stringType)],
+        privateKeyJWT: String = config()[Key("TOKEN_X_PRIVATE_JWK", stringType)],
+        wellknownUrl: String = config()[Key("TOKEN_X_WELL_KNOWN_URL", stringType)],
+        audience: String = config()[Key("SKJERMING_AUDIENCE", stringType)],
+    ) = TokenProvider.OauthTokenxConfig(
+        clientId = clientId,
+        clientJwk = privateKeyJWT,
+        wellknownUrl = wellknownUrl,
+        audience = audience,
     )
 
     fun skjermingKlientConfig(baseUrl: String = config()[Key("skjermingBaseUrl", stringType)]) =
