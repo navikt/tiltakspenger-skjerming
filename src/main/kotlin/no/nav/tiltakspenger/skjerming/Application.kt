@@ -19,11 +19,9 @@ import no.nav.security.token.support.v2.tokenValidationSupport
 import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.routes.AzureRoutes
-import no.nav.tiltakspenger.skjerming.routes.TokenxRoutes
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
 import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfiguration
 enum class ISSUER(val value: String) {
-    TOKENDINGS("tokendings"),
     AZURE("azure"),
 }
 
@@ -65,9 +63,6 @@ fun Application.applicationModule() {
     installJacksonFeature()
     installAuthentication()
     routing {
-        authenticate(ISSUER.TOKENDINGS.value) {
-            TokenxRoutes(skjermingService)
-        }
         authenticate(ISSUER.AZURE.value) {
             AzureRoutes(skjermingService)
         }
@@ -77,15 +72,6 @@ fun Application.applicationModule() {
 fun Application.installAuthentication() {
     val config = ApplicationConfig("application.conf")
     install(Authentication) {
-        tokenValidationSupport(
-            name = ISSUER.TOKENDINGS.value,
-            config = config,
-            requiredClaims = RequiredClaims(
-                issuer = ISSUER.TOKENDINGS.value,
-                claimMap = arrayOf("acr=Level4", "acr=idporten-loa-high"),
-                combineWithOr = false,
-            ),
-        )
         tokenValidationSupport(
             name = ISSUER.AZURE.value,
             config = config,

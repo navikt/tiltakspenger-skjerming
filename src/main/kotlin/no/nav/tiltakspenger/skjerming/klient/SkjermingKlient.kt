@@ -56,15 +56,6 @@ class SkjermingKlient(
         )
     }
 
-    suspend fun hentSkjermingInfoMedTokenx(ident: String, callId: String, subjectToken: String): Boolean {
-        val token = tokenProvider.getTokenxToken(subjectToken)
-        return erSkjermetPerson(
-            fødselsnummer = ident,
-            callId = callId,
-            token = token,
-        )
-    }
-
     data class SkjermingKlientConfig(
         val baseUrl: String,
     )

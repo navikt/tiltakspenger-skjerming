@@ -3,20 +3,13 @@ package no.nav.tiltakspenger.skjerming.auth
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nimbusds.oauth2.sdk.GrantType
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
-import com.nimbusds.oauth2.sdk.auth.JWTAuthentication
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.http.Parameters
-import no.nav.security.token.support.client.core.ClientAuthenticationProperties
-import no.nav.security.token.support.client.core.ClientProperties.TokenExchangeProperties.Companion.SUBJECT_TOKEN_TYPE_VALUE
-import no.nav.security.token.support.client.core.auth.ClientAssertion
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
-import java.net.URI
 import java.time.LocalDateTime
 import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfig
 
@@ -24,7 +17,6 @@ class TokenProvider(
     objectMapper: ObjectMapper = defaultObjectMapper(),
     engine: HttpClientEngine? = null,
     private val azureconfig: OauthAzureConfig = SkjermingConfig.oauthzureConfig(),
-    private val tokenxConfig: OauthTokenxConfig = SkjermingConfig.oauthTokenxConfig(),
 ) {
 
     private val httpClient = defaultHttpClient(
@@ -47,20 +39,8 @@ class TokenProvider(
         }
     }
 
-    suspend fun getTokenxToken(subjectToken: String): String {
-        try {
-            return tokenExchange(subjectToken)
-        } catch (e: Exception) {
-            throw TokenxAuthException(e)
-        }
-    }
-
     private suspend fun wellknown(): WellKnown {
         return httpClient.get(azureconfig.wellknownUrl).body()
-    }
-
-    private suspend fun tokenxEndpointUrl(): String {
-        return httpClient.get(tokenxConfig.wellknownUrl).body<WellKnown>().tokenEndpoint
     }
 
     private suspend fun clientCredentials(): String {
@@ -77,32 +57,6 @@ class TokenProvider(
                 it.accessToken,
                 it.expiresIn.toLong(),
             )
-            return@let it.accessToken
-        }
-    }
-
-    private suspend fun tokenExchange(subjectToken: String): String {
-        val clientAuthProperties = ClientAuthenticationProperties(
-            clientId = tokenxConfig.clientId,
-            clientAuthMethod = ClientAuthenticationMethod.PRIVATE_KEY_JWT,
-            clientSecret = azureconfig.clientSecret,
-            clientJwk = tokenxConfig.clientJwk,
-        )
-
-        val clientAssertion = ClientAssertion(URI.create(tokenxEndpointUrl()), clientAuthProperties)
-
-        return httpClient.submitForm(
-            url = wellknown().tokenEndpoint,
-            formParameters = Parameters.build {
-                append("grant_type", GrantType.TOKEN_EXCHANGE.value)
-                append("subject_token_type", SUBJECT_TOKEN_TYPE_VALUE)
-                append("subject_token", subjectToken)
-                append("audience", tokenxConfig.audience)
-                append("client_id", tokenxConfig.clientId)
-                append("client_assertion_type", JWTAuthentication.CLIENT_ASSERTION_TYPE)
-                append("client_assertion", clientAssertion.assertion())
-            },
-        ).body<OAuth2AccessTokenResponse>().let {
             return@let it.accessToken
         }
     }
@@ -157,5 +111,4 @@ class TokenProvider(
     )
 
     class AzureAuthException(e: Exception) : RuntimeException(e)
-    class TokenxAuthException(e: Exception) : RuntimeException(e)
 }

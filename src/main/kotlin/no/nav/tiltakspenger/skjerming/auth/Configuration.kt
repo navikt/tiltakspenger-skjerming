@@ -101,18 +101,6 @@ object Configuration {
         wellknownUrl = wellknownUrl,
     )
 
-    fun oauthTokenxConfig(
-        clientId: String = config()[Key("TOKEN_X_CLIENT_ID", stringType)],
-        privateKeyJWT: String = config()[Key("TOKEN_X_PRIVATE_JWK", stringType)],
-        wellknownUrl: String = config()[Key("TOKEN_X_WELL_KNOWN_URL", stringType)],
-        audience: String = config()[Key("SKJERMING_AUDIENCE", stringType)],
-    ) = TokenProvider.OauthTokenxConfig(
-        clientId = clientId,
-        clientJwk = privateKeyJWT,
-        wellknownUrl = wellknownUrl,
-        audience = audience,
-    )
-
     fun skjermingKlientConfig(baseUrl: String = config()[Key("skjermingBaseUrl", stringType)]) =
         SkjermingKlient.SkjermingKlientConfig(baseUrl = baseUrl)
 }

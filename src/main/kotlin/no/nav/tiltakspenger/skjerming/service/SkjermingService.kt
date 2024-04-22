@@ -157,21 +157,4 @@ class SkjermingService(
             ),
         )
     }
-
-    suspend fun hentSkjermingInfoMedTokenx(ident: String, barn: List<String>, callId: String, subjectToken: String): SkjermingResponsDTO {
-        return SkjermingResponsDTO(
-            skjermingForPersoner = SkjermingDTO(
-                søker = SkjermingPersonDTO(
-                    ident = ident,
-                    skjerming = skjermingKlient.hentSkjermingInfoMedTokenx(ident, callId, subjectToken),
-                ),
-                barn = barn.map {
-                    SkjermingPersonDTO(
-                        ident = it,
-                        skjerming = skjermingKlient.hentSkjermingInfoMedTokenx(ident, callId, subjectToken),
-                    )
-                },
-            ),
-        )
-    }
 }
