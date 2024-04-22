@@ -11,6 +11,7 @@ import io.ktor.http.headersOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.tiltakspenger.skjerming.auth.AzureTokenProvider
 import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,7 +24,7 @@ internal class SkjermingKlientTest {
         const val accessToken = "woopwoop"
     }
 
-    val mockTokenProvider = mockk<TokenProvider>(relaxed = true)
+    val mockTokenProvider = mockk<AzureTokenProvider>(relaxed = true)
 
     @Test
     fun `skal inkludere Azure token i header`() {
@@ -43,7 +44,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProvider = mockTokenProvider,
+            getToken = { accessToken },
             engine = mockEngine,
         )
 
@@ -51,7 +52,6 @@ internal class SkjermingKlientTest {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
                 callId = "y",
-                token = accessToken,
             )
         }
         assertEquals("Bearer $accessToken", actualAuthHeader)
@@ -74,7 +74,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProvider = mockTokenProvider,
+            getToken = { accessToken },
             engine = mockEngine,
         )
 
@@ -82,7 +82,6 @@ internal class SkjermingKlientTest {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
                 callId = "y",
-                token = accessToken,
             )
         }
         assertEquals(true, erSkjermet)
@@ -91,7 +90,7 @@ internal class SkjermingKlientTest {
     @Test
     fun `skal håndtere InternalServerError`() {
         val tokenProvider = mockk<TokenProvider>()
-        coEvery { tokenProvider.getAzureToken() } returns "woopwoop"
+        coEvery { tokenProvider.getToken() } returns "woopwoop"
 
         val mockEngine = MockEngine { request ->
             println("URL er ${request.url}")
@@ -107,7 +106,7 @@ internal class SkjermingKlientTest {
         val client = SkjermingKlient(
             skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
-            tokenProvider = mockTokenProvider,
+            getToken = { accessToken },
             engine = mockEngine,
         )
 
@@ -116,7 +115,6 @@ internal class SkjermingKlientTest {
                 client.erSkjermetPerson(
                     fødselsnummer = "x",
                     callId = "y",
-                    token = accessToken,
                 )
             }
         }

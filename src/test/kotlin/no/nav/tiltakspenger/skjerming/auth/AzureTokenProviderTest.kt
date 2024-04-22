@@ -41,10 +41,10 @@ internal class AzureTokenProviderTest {
             }
         }
 
-        val tokenProvider = TokenProvider(
+        val tokenProvider = AzureTokenProvider(
             objectMapper = defaultObjectMapper(),
             engine = mockEngine,
-            azureconfig = TokenProvider.OauthAzureConfig(
+            azureconfig = AzureTokenProvider.OauthAzureConfig(
                 wellknownUrl = wellKnownUrl,
                 clientSecret = "opensecret",
                 clientId = "id",
@@ -53,7 +53,7 @@ internal class AzureTokenProviderTest {
         )
 
         val token: String = runBlocking {
-            tokenProvider.getAzureToken()
+            tokenProvider.getToken()
         }
         assertEquals(accessToken, token)
     }

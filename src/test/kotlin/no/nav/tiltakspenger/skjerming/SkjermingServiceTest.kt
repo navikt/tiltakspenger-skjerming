@@ -32,7 +32,7 @@ internal class SkjermingServiceTest {
 
     @Test
     fun `Sjekk happy case`() {
-        coEvery { skjermingKlient.erSkjermetPerson(any(), any(), any()) } returns true
+        coEvery { skjermingKlient.erSkjermetPerson(any(), any()) } returns true
 
         testRapid.sendTestMessage(behovMelding)
 
