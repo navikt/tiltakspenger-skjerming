@@ -58,16 +58,16 @@ class SkjermingService(
                         skjermingForPersoner = SkjermingDTO(
                             søker = SkjermingPersonDTO(
                                 ident = ident,
-                                skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
-                                    ident = ident,
+                                skjerming = skjermingKlient.erSkjermetPerson(
+                                    fødselsnummer = ident,
                                     callId = behovId,
                                 ),
                             ),
                             barn = barn.map {
                                 SkjermingPersonDTO(
                                     ident = it,
-                                    skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
-                                        ident = ident,
+                                    skjerming = skjermingKlient.erSkjermetPerson(
+                                        fødselsnummer = ident,
                                         callId = behovId,
                                     ),
                                 )
@@ -143,15 +143,12 @@ class SkjermingService(
             skjermingForPersoner = SkjermingDTO(
                 søker = SkjermingPersonDTO(
                     ident = ident,
-                    skjerming = skjermingKlient.hentSkjermingInfoMedAzure(ident, callId),
+                    skjerming = skjermingKlient.erSkjermetPerson(ident, callId),
                 ),
                 barn = barn.map {
                     SkjermingPersonDTO(
                         ident = it,
-                        skjerming = skjermingKlient.hentSkjermingInfoMedAzure(
-                            ident = ident,
-                            callId = callId,
-                        ),
+                        skjerming = skjermingKlient.erSkjermetPerson(ident, callId),
                     )
                 },
             ),

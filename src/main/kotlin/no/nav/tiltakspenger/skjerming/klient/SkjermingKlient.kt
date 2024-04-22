@@ -12,7 +12,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfiguration
@@ -20,8 +19,8 @@ import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfigurati
 class SkjermingKlient(
     private val skjermingConfig: SkjermingKlientConfig = SkjermingConfiguration.skjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
+    private val getToken: suspend () -> String,
     engine: HttpClientEngine? = null,
-    private val tokenProvider: TokenProvider,
     private val httpClient: HttpClient = defaultHttpClient(
         objectMapper = objectMapper,
         engine = engine,
@@ -31,10 +30,10 @@ class SkjermingKlient(
         const val navCallIdHeader = "Nav-Call-Id"
     }
 
-    suspend fun erSkjermetPerson(fødselsnummer: String, callId: String, token: String): Boolean {
+    suspend fun erSkjermetPerson(fødselsnummer: String, callId: String): Boolean {
         val httpResponse = httpClient.preparePost("${skjermingConfig.baseUrl}/skjermet") {
             header(navCallIdHeader, callId)
-            bearerAuth(token)
+            bearerAuth(getToken())
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(SkjermetDataRequestDTO(fødselsnummer))
@@ -46,15 +45,6 @@ class SkjermingKlient(
     }
 
     private data class SkjermetDataRequestDTO(val personident: String)
-
-    suspend fun hentSkjermingInfoMedAzure(ident: String, callId: String): Boolean {
-        val token = tokenProvider.getAzureToken()
-        return erSkjermetPerson(
-            fødselsnummer = ident,
-            callId = callId,
-            token = token,
-        )
-    }
 
     data class SkjermingKlientConfig(
         val baseUrl: String,

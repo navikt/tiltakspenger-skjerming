@@ -22,9 +22,9 @@ fun Route.AzureRoutes(skjermingService: SkjermingService) {
     get(AZURE_SKJERMING_PATH) {
         LOG.info { "Mottatt forespørsel på $AZURE_SKJERMING_PATH for å hente data om bruker skljermet" }
 
-        val ident = call.receive<RequestBody>().ident ?: throw IllegalStateException("Mangler fødselsnummer")
+        val ident = call.receive<RequestBody>().ident
         val barn = call.receive<RequestBody>().barn
-        val response = skjermingService.hentSkjermingInfoMedAzure(ident, barn, callId = call.callId!!)
+        val response = skjermingService.hentSkjermingInfoMedAzure(ident, barn, call.callId!!)
 
         call.respond(status = HttpStatusCode.OK, message = response)
     }

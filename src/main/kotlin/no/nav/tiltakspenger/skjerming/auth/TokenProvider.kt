@@ -13,11 +13,15 @@ import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import java.time.LocalDateTime
 import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfig
 
-class TokenProvider(
+fun interface TokenProvider {
+    suspend fun getToken(): String
+}
+
+class AzureTokenProvider(
     objectMapper: ObjectMapper = defaultObjectMapper(),
     engine: HttpClientEngine? = null,
-    private val azureconfig: OauthAzureConfig = SkjermingConfig.oauthzureConfig(),
-) {
+    private val azureconfig: OauthAzureConfig = SkjermingConfig.oauthAzureConfig(),
+) : TokenProvider {
 
     private val httpClient = defaultHttpClient(
         objectMapper = objectMapper,
@@ -26,7 +30,7 @@ class TokenProvider(
 
     private val tokenCache = TokenCache()
 
-    suspend fun getAzureToken(): String {
+    override suspend fun getToken(): String {
         try {
             val currentToken = tokenCache.token
             return if (currentToken != null && !tokenCache.isExpired()) {
@@ -83,13 +87,6 @@ class TokenProvider(
         val clientId: String,
         val clientSecret: String,
         val wellknownUrl: String,
-    )
-
-    data class OauthTokenxConfig(
-        val clientId: String,
-        val clientJwk: String,
-        val wellknownUrl: String,
-        val audience: String,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)

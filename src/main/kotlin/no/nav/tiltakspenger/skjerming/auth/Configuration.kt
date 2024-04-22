@@ -89,12 +89,12 @@ object Configuration {
         }
     }
 
-    fun oauthzureConfig(
+    fun oauthAzureConfig(
         scope: String = config()[Key("SKJERMING_SCOPE", stringType)],
         clientId: String = config()[Key("AZURE_APP_CLIENT_ID", stringType)],
         clientSecret: String = config()[Key("AZURE_APP_CLIENT_SECRET", stringType)],
         wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)],
-    ) = TokenProvider.OauthAzureConfig(
+    ) = AzureTokenProvider.OauthAzureConfig(
         scope = scope,
         clientId = clientId,
         clientSecret = clientSecret,
