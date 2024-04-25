@@ -1,3 +1,4 @@
 kafka:
   pool: nav-prod
 urlSkjerming: skjermede-personer-pip.intern.nav.no
+cluster: prod-gcp

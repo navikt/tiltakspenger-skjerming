@@ -11,7 +11,7 @@ import io.ktor.http.headersOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.tiltakspenger.skjerming.auth.AzureTokenProvider
+import no.nav.tiltakspenger.skjerming.auth.Configuration
 import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,8 +23,6 @@ internal class SkjermingKlientTest {
     companion object {
         const val accessToken = "woopwoop"
     }
-
-    val mockTokenProvider = mockk<AzureTokenProvider>(relaxed = true)
 
     @Test
     fun `skal inkludere Azure token i header`() {
@@ -42,7 +40,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,
@@ -72,7 +70,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,
@@ -104,7 +102,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,

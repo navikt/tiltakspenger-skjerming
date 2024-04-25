@@ -11,7 +11,7 @@ import mu.KotlinLogging
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
 
 private val LOG = KotlinLogging.logger {}
-const val AZURE_SKJERMING_PATH = "/azure/skjerming"
+const val AZURE_SKJERMING_PATH = "/azure/skjermet"
 
 data class RequestBody(
     val ident: String,

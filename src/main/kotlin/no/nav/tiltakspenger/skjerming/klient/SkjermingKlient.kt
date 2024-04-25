@@ -12,12 +12,13 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import no.nav.tiltakspenger.skjerming.auth.Configuration
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
-import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfiguration
+import no.nav.tiltakspenger.skjerming.auth.Configuration as config
 
 class SkjermingKlient(
-    private val skjermingConfig: SkjermingKlientConfig = SkjermingConfiguration.skjermingKlientConfig(),
+    private val skjermingConfig: Configuration.SkjermingKlientConfig = config.skjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
     private val getToken: suspend () -> String,
     engine: HttpClientEngine? = null,
@@ -45,8 +46,4 @@ class SkjermingKlient(
     }
 
     private data class SkjermetDataRequestDTO(val personident: String)
-
-    data class SkjermingKlientConfig(
-        val baseUrl: String,
-    )
 }
