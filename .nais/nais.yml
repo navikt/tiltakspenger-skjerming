@@ -31,6 +31,13 @@ spec:
     outbound:
       external:
         - host: {{ urlSkjerming }}
+    inbound:
+      rules:
+        - application: tiltakspenger-skjerming-river
+          namespace: tpts
+          cluster: {{ cluster }}
+
+
 #      rules:
 #        - application: clamav
 #          namespace: clamav
