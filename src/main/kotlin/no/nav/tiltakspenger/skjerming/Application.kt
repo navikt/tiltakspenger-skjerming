@@ -9,18 +9,19 @@ import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.authenticate
 import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.routing
 import mu.KotlinLogging
-import no.nav.helse.rapids_rivers.RapidApplication
-import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.security.token.support.v2.RequiredClaims
 import no.nav.security.token.support.v2.tokenValidationSupport
 import no.nav.tiltakspenger.skjerming.auth.AzureTokenProvider
+import no.nav.tiltakspenger.skjerming.auth.Configuration.httpPort
 import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.routes.AzureRoutes
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
-import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfiguration
+
 enum class ISSUER(val value: String) {
     AZURE("azure"),
 }
@@ -35,31 +36,13 @@ fun main() {
         securelog.error(e) { e.message }
     }
 
-    // embeddedServer(Netty, port = httpPort(), module = Application::applicationModule).start(wait = true)
-    val tokenProvider = AzureTokenProvider()
-    RapidApplication.create(SkjermingConfiguration.rapidsAndRivers).apply {
-        SkjermingService(
-            rapidsConnection = this,
-            skjermingKlient = SkjermingKlient(getToken = tokenProvider::getToken),
-        )
-
-        register(object : RapidsConnection.StatusListener {
-            override fun onStartup(rapidsConnection: RapidsConnection) {
-                log.info { "Starting tiltakspenger-skjerming" }
-            }
-
-            override fun onShutdown(rapidsConnection: RapidsConnection) {
-                log.info { "Stopping tiltakspenger-skjerming" }
-                super.onShutdown(rapidsConnection)
-            }
-        })
-    }.start()
+    embeddedServer(Netty, port = httpPort(), module = Application::applicationModule).start(wait = true)
 }
 
 fun Application.applicationModule() {
     val tokenProvider = AzureTokenProvider()
     val skjermingClient = SkjermingKlient(getToken = tokenProvider::getToken)
-    val skjermingService = SkjermingService(null, skjermingKlient = skjermingClient)
+    val skjermingService = SkjermingService(skjermingKlient = skjermingClient)
 
     installJacksonFeature()
     installAuthentication()

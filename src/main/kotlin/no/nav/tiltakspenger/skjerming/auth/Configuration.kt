@@ -4,31 +4,22 @@ import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
 import com.natpryce.konfig.EnvironmentVariables
 import com.natpryce.konfig.Key
+import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
 
 object Configuration {
 
-    val rapidsAndRivers = mapOf(
-        "RAPID_APP_NAME" to "tiltakspenger-skjerming",
-        "KAFKA_BROKERS" to System.getenv("KAFKA_BROKERS"),
-        "KAFKA_CREDSTORE_PASSWORD" to System.getenv("KAFKA_CREDSTORE_PASSWORD"),
-        "KAFKA_TRUSTSTORE_PATH" to System.getenv("KAFKA_TRUSTSTORE_PATH"),
-        "KAFKA_KEYSTORE_PATH" to System.getenv("KAFKA_KEYSTORE_PATH"),
-        "KAFKA_RAPID_TOPIC" to "tpts.rapid.v1",
-        "KAFKA_RESET_POLICY" to "latest",
-        "KAFKA_CONSUMER_GROUP_ID" to "tiltakspenger-skjerming-v1",
+    private val defaultProperties = ConfigurationMap(
+        mapOf(
+            "application.httpPort" to 8080.toString(),
+            "SERVICEUSER_TPTS_USERNAME" to System.getenv("SERVICEUSER_TPTS_USERNAME"),
+            "SERVICEUSER_TPTS_PASSWORD" to System.getenv("SERVICEUSER_TPTS_PASSWORD"),
+            "AZURE_APP_CLIENT_ID" to System.getenv("AZURE_APP_CLIENT_ID"),
+            "AZURE_APP_CLIENT_SECRET" to System.getenv("AZURE_APP_CLIENT_SECRET"),
+            "AZURE_APP_WELL_KNOWN_URL" to System.getenv("AZURE_APP_WELL_KNOWN_URL"),
+        ),
     )
-
-    private val otherDefaultProperties = mapOf(
-        "application.httpPort" to 8080.toString(),
-        "SERVICEUSER_TPTS_USERNAME" to System.getenv("SERVICEUSER_TPTS_USERNAME"),
-        "SERVICEUSER_TPTS_PASSWORD" to System.getenv("SERVICEUSER_TPTS_PASSWORD"),
-        "AZURE_APP_CLIENT_ID" to System.getenv("AZURE_APP_CLIENT_ID"),
-        "AZURE_APP_CLIENT_SECRET" to System.getenv("AZURE_APP_CLIENT_SECRET"),
-        "AZURE_APP_WELL_KNOWN_URL" to System.getenv("AZURE_APP_WELL_KNOWN_URL"),
-    )
-    private val defaultProperties = ConfigurationMap(rapidsAndRivers + otherDefaultProperties)
 
     private val localProperties = ConfigurationMap(
         mapOf(
@@ -69,6 +60,8 @@ object Configuration {
             systemProperties() overriding EnvironmentVariables overriding localProperties overriding defaultProperties
         }
     }
+
+    fun httpPort() = config()[Key("application.httpPort", intType)]
 
     fun oauthAzureConfig(
         scope: String = config()[Key("SKJERMING_SCOPE", stringType)],
