@@ -13,8 +13,6 @@ object Configuration {
     private val defaultProperties = ConfigurationMap(
         mapOf(
             "application.httpPort" to 8080.toString(),
-            "SERVICEUSER_TPTS_USERNAME" to System.getenv("SERVICEUSER_TPTS_USERNAME"),
-            "SERVICEUSER_TPTS_PASSWORD" to System.getenv("SERVICEUSER_TPTS_PASSWORD"),
             "AZURE_APP_CLIENT_ID" to System.getenv("AZURE_APP_CLIENT_ID"),
             "AZURE_APP_CLIENT_SECRET" to System.getenv("AZURE_APP_CLIENT_SECRET"),
             "AZURE_APP_WELL_KNOWN_URL" to System.getenv("AZURE_APP_WELL_KNOWN_URL"),
@@ -42,7 +40,7 @@ object Configuration {
     )
     private val prodProperties = ConfigurationMap(
         mapOf(
-            "stsUrl" to "",
+            "stsUrl" to "https://sts.adeo.no/SecurityTokenServiceProvider/",
             "application.profile" to Profile.PROD.toString(),
             "SKJERMING_SCOPE" to "api://prod-gcp.nom.skjermede-personer-pip/.default",
             "SKJERMING_BASE_URL" to "https://skjermede-personer-pip.intern.nav.no",

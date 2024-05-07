@@ -22,7 +22,7 @@ class SkjermingService(
                 barn = barn.map {
                     SkjermingPersonDTO(
                         ident = it,
-                        skjerming = skjermingKlient.erSkjermetPerson(ident, callId),
+                        skjerming = skjermingKlient.erSkjermetPerson(it, callId),
                     )
                 },
             ),
