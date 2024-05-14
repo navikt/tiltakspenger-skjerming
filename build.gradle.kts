@@ -1,15 +1,15 @@
 val javaVersion = JavaVersion.VERSION_21
 val prometheusVersion = "0.15.0"
-val ktorVersion = "2.3.10"
-val jacksonVersion = "2.17.0"
+val ktorVersion = "2.3.11"
+val jacksonVersion = "2.17.1"
 val mockkVersion = "1.13.10"
-val kotestVersion = "5.8.1"
+val kotestVersion = "5.9.0"
 val felleslibVersion = "0.0.93"
 val tokenSupportVersion = "4.1.4"
 
 plugins {
     application
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "1.9.24"
     id("com.diffplug.spotless") version "6.25.0"
     // id("ca.cutterslade.analyze") version "1.9.1"
 }
@@ -27,7 +27,7 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1")
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
     implementation("com.github.navikt.tiltakspenger-libs:skjerming-dtos:$felleslibVersion")
