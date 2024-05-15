@@ -12,6 +12,7 @@ import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.tiltakspenger.skjerming.klient.SkjermingKlient
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
@@ -60,6 +61,7 @@ internal class TokenValidationTest {
             val response = client.post("/azure/skjermet") {
                 contentType(type = ContentType.Application.Json)
                 header("Authorization", "Bearer ${token.serialize()}")
+                header(SkjermingKlient.navCallIdHeader, "123")
             }
             Assertions.assertEquals(HttpStatusCode.Unauthorized, response.status)
         }
@@ -73,6 +75,7 @@ internal class TokenValidationTest {
             val response = client.post("/azure/skjermet") {
                 contentType(type = ContentType.Application.Json)
                 header("Authorization", "Bearer ${token.serialize()}")
+                header(SkjermingKlient.navCallIdHeader, "123")
                 setBody("""{"personident":"123"}""")
             }
             Assertions.assertEquals(HttpStatusCode.OK, response.status)

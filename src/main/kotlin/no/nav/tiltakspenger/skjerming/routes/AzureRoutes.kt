@@ -3,6 +3,7 @@ package no.nav.tiltakspenger.skjerming.routes
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.plugins.callid.callId
+import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -20,9 +21,9 @@ data class RequestBody(
 fun Route.AzureRoutes(skjermingService: SkjermingService) {
     post(AZURE_SKJERMING_PATH) {
         LOG.info { "Mottatt forespørsel på $AZURE_SKJERMING_PATH for å hente data om bruker skljermet" }
-
+        val callId = requireNotNull(call.request.header("Nav-Call-Id")) { "Nav-Call-Id ikke satt" }
         val personident = call.receive<RequestBody>().personident
-        val response = skjermingService.hentSkjermingInfoMedAzure(personident, call.callId!!)
+        val response = skjermingService.hentSkjermingInfoMedAzure(personident, callId)
 
         call.respond(status = HttpStatusCode.OK, message = response)
     }
