@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.skjerming.oauth
+package no.nav.tiltakspenger.skjerming.auth
 
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -44,7 +44,7 @@ internal class AzureTokenProviderTest {
         val tokenProvider = AzureTokenProvider(
             objectMapper = defaultObjectMapper(),
             engine = mockEngine,
-            config = AzureTokenProvider.OauthConfig(
+            azureconfig = AzureTokenProvider.OauthAzureConfig(
                 wellknownUrl = wellKnownUrl,
                 clientSecret = "opensecret",
                 clientId = "id",

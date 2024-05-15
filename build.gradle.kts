@@ -5,6 +5,7 @@ val jacksonVersion = "2.17.1"
 val mockkVersion = "1.13.10"
 val kotestVersion = "5.9.0"
 val felleslibVersion = "0.0.93"
+val tokenSupportVersion = "4.1.4"
 
 plugins {
     application
@@ -30,8 +31,7 @@ dependencies {
 //    implementation("io.prometheus:simpleclient:$prometheusVersion")
 //    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
     implementation("com.github.navikt.tiltakspenger-libs:skjerming-dtos:$felleslibVersion")
-    implementation("com.github.navikt:rapids-and-rivers:2024041714471713358051.71746f05c18e")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.8.0")
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("com.natpryce:konfig:1.6.10.0")
 
@@ -49,7 +49,13 @@ dependencies {
     implementation("io.ktor:ktor-http-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    //Token
+    implementation("no.nav.security:token-client-core:$tokenSupportVersion")
+    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
@@ -58,20 +64,19 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
-    testImplementation("org.junit-pioneer:junit-pioneer:2.2.0")
-    testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
+    testImplementation("no.nav.security:mock-oauth2-server:2.1.5")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
     testImplementation("io.kotest:kotest-extensions:$kotestVersion")
-}
-
-configurations.all {
-    // exclude JUnit 4
-    exclude(group = "junit", module = "junit")
 }
 
 application {

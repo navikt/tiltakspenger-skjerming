@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.skjerming.oauth
+package no.nav.tiltakspenger.skjerming.auth
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -8,22 +8,22 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.http.Parameters
-import no.nav.tiltakspenger.skjerming.Configuration
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
 import java.time.LocalDateTime
+import no.nav.tiltakspenger.skjerming.auth.Configuration as SkjermingConfig
 
 fun interface TokenProvider {
-
     suspend fun getToken(): String
 }
 
 class AzureTokenProvider(
     objectMapper: ObjectMapper = defaultObjectMapper(),
     engine: HttpClientEngine? = null,
-    private val config: OauthConfig = Configuration.oauthConfig(),
+    private val azureconfig: OauthAzureConfig = SkjermingConfig.oauthAzureConfig(),
 ) : TokenProvider {
-    private val azureHttpClient = defaultHttpClient(
+
+    private val httpClient = defaultHttpClient(
         objectMapper = objectMapper,
         engine = engine,
     )
@@ -31,26 +31,30 @@ class AzureTokenProvider(
     private val tokenCache = TokenCache()
 
     override suspend fun getToken(): String {
-        val currentToken = tokenCache.token
-        return if (currentToken != null && !tokenCache.isExpired()) {
-            currentToken
-        } else {
-            clientCredentials()
+        try {
+            val currentToken = tokenCache.token
+            return if (currentToken != null && !tokenCache.isExpired()) {
+                currentToken
+            } else {
+                clientCredentials()
+            }
+        } catch (e: Exception) {
+            throw AzureAuthException(e)
         }
     }
 
     private suspend fun wellknown(): WellKnown {
-        return azureHttpClient.get(config.wellknownUrl).body()
+        return httpClient.get(azureconfig.wellknownUrl).body()
     }
 
     private suspend fun clientCredentials(): String {
-        return azureHttpClient.submitForm(
+        return httpClient.submitForm(
             url = wellknown().tokenEndpoint,
             formParameters = Parameters.build {
                 append("grant_type", "client_credentials")
-                append("client_id", config.clientId)
-                append("client_secret", config.clientSecret)
-                append("scope", config.scope)
+                append("client_id", azureconfig.clientId)
+                append("client_secret", azureconfig.clientSecret)
+                append("scope", azureconfig.scope)
             },
         ).body<OAuth2AccessTokenResponse>().let {
             tokenCache.update(
@@ -62,7 +66,6 @@ class AzureTokenProvider(
     }
 
     class TokenCache {
-
         var token: String? = null
             private set
         private var expires: LocalDateTime? = null
@@ -71,7 +74,7 @@ class AzureTokenProvider(
 
         fun update(accessToken: String, expiresIn: Long) {
             token = accessToken
-            expires = LocalDateTime.now().plusSeconds(expiresIn).minusSeconds(Companion.SAFETYMARGIN)
+            expires = LocalDateTime.now().plusSeconds(expiresIn).minusSeconds(SAFETYMARGIN)
         }
 
         companion object {
@@ -79,7 +82,7 @@ class AzureTokenProvider(
         }
     }
 
-    data class OauthConfig(
+    data class OauthAzureConfig(
         val scope: String,
         val clientId: String,
         val clientSecret: String,
@@ -103,4 +106,6 @@ class AzureTokenProvider(
         @JsonProperty("expires_in")
         val expiresIn: Int,
     )
+
+    class AzureAuthException(e: Exception) : RuntimeException(e)
 }

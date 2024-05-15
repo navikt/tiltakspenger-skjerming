@@ -12,12 +12,13 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import no.nav.tiltakspenger.skjerming.Configuration
+import no.nav.tiltakspenger.skjerming.auth.Configuration
 import no.nav.tiltakspenger.skjerming.defaultHttpClient
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
+import no.nav.tiltakspenger.skjerming.auth.Configuration as config
 
 class SkjermingKlient(
-    private val skjermingConfig: SkjermingKlientConfig = Configuration.skjermingKlientConfig(),
+    private val skjermingConfig: Configuration.SkjermingKlientConfig = config.skjermingKlientConfig(),
     private val objectMapper: ObjectMapper = defaultObjectMapper(),
     private val getToken: suspend () -> String,
     engine: HttpClientEngine? = null,
@@ -30,9 +31,9 @@ class SkjermingKlient(
         const val navCallIdHeader = "Nav-Call-Id"
     }
 
-    suspend fun erSkjermetPerson(fødselsnummer: String, behovId: String): Boolean {
+    suspend fun erSkjermetPerson(fødselsnummer: String, callId: String): Boolean {
         val httpResponse = httpClient.preparePost("${skjermingConfig.baseUrl}/skjermet") {
-            header(navCallIdHeader, behovId)
+            header(navCallIdHeader, callId)
             bearerAuth(getToken())
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
@@ -45,8 +46,4 @@ class SkjermingKlient(
     }
 
     private data class SkjermetDataRequestDTO(val personident: String)
-
-    data class SkjermingKlientConfig(
-        val baseUrl: String,
-    )
 }

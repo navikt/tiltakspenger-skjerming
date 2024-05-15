@@ -11,8 +11,9 @@ import io.ktor.http.headersOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.tiltakspenger.skjerming.auth.Configuration
+import no.nav.tiltakspenger.skjerming.auth.TokenProvider
 import no.nav.tiltakspenger.skjerming.defaultObjectMapper
-import no.nav.tiltakspenger.skjerming.oauth.TokenProvider
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -39,7 +40,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,
@@ -48,7 +49,7 @@ internal class SkjermingKlientTest {
         runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y",
+                callId = "y",
             )
         }
         assertEquals("Bearer $accessToken", actualAuthHeader)
@@ -69,7 +70,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,
@@ -78,7 +79,7 @@ internal class SkjermingKlientTest {
         val erSkjermet = runBlocking {
             client.erSkjermetPerson(
                 fødselsnummer = "x",
-                behovId = "y",
+                callId = "y",
             )
         }
         assertEquals(true, erSkjermet)
@@ -101,7 +102,7 @@ internal class SkjermingKlientTest {
             }
         }
         val client = SkjermingKlient(
-            skjermingConfig = SkjermingKlient.SkjermingKlientConfig(baseUrl = "http://localhost:8080"),
+            skjermingConfig = Configuration.skjermingKlientConfig(baseUrl = "http://localhost:8080"),
             objectMapper = defaultObjectMapper(),
             getToken = { accessToken },
             engine = mockEngine,
@@ -111,7 +112,7 @@ internal class SkjermingKlientTest {
             runBlocking {
                 client.erSkjermetPerson(
                     fødselsnummer = "x",
-                    behovId = "y",
+                    callId = "y",
                 )
             }
         }
