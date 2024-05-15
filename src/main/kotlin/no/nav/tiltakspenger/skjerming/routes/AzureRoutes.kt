@@ -14,18 +14,15 @@ private val LOG = KotlinLogging.logger {}
 const val AZURE_SKJERMING_PATH = "/azure/skjermet"
 
 data class RequestBody(
-    val ident: String,
-    val barn: List<String>,
+    val personident: String,
 )
 
 fun Route.AzureRoutes(skjermingService: SkjermingService) {
     post(AZURE_SKJERMING_PATH) {
         LOG.info { "Mottatt forespørsel på $AZURE_SKJERMING_PATH for å hente data om bruker skljermet" }
 
-        val res = call.receive<RequestBody>()
-        val ident = res.ident
-        val barn = res.barn
-        val response = skjermingService.hentSkjermingInfoMedAzure(ident, barn, call.callId!!)
+        val personident = call.receive<RequestBody>().personident
+        val response = skjermingService.hentSkjermingInfoMedAzure(personident, call.callId!!)
 
         call.respond(status = HttpStatusCode.OK, message = response)
     }

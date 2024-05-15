@@ -12,9 +12,6 @@ import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.tiltakspenger.libs.skjerming.SkjermingDTO
-import no.nav.tiltakspenger.libs.skjerming.SkjermingPersonDTO
-import no.nav.tiltakspenger.libs.skjerming.SkjermingResponsDTO
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
@@ -40,20 +37,7 @@ internal class TokenValidationTest {
     }
 
     val mockedSkjermingService: SkjermingService = mockk<SkjermingService>().also {
-        coEvery { it.hentSkjermingInfoMedAzure(any(), any(), any()) } returns SkjermingResponsDTO(
-            skjermingForPersoner = SkjermingDTO(
-                søker = SkjermingPersonDTO(
-                    ident = "123",
-                    skjerming = false,
-                ),
-                barn = listOf(
-                    SkjermingPersonDTO(
-                        ident = "456",
-                        skjerming = false,
-                    ),
-                ),
-            ),
-        )
+        coEvery { it.hentSkjermingInfoMedAzure(any(), any()) } returns false
     }
 
     @Test
@@ -89,7 +73,7 @@ internal class TokenValidationTest {
             val response = client.post("/azure/skjermet") {
                 contentType(type = ContentType.Application.Json)
                 header("Authorization", "Bearer ${token.serialize()}")
-                setBody("""{"ident":"123","barn":["456"]}""")
+                setBody("""{"personident":"123"}""")
             }
             Assertions.assertEquals(HttpStatusCode.OK, response.status)
         }
