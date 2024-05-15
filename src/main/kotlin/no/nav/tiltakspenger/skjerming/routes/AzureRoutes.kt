@@ -6,7 +6,7 @@ import io.ktor.server.plugins.callid.callId
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import mu.KotlinLogging
 import no.nav.tiltakspenger.skjerming.service.SkjermingService
 
@@ -19,11 +19,12 @@ data class RequestBody(
 )
 
 fun Route.AzureRoutes(skjermingService: SkjermingService) {
-    get(AZURE_SKJERMING_PATH) {
+    post(AZURE_SKJERMING_PATH) {
         LOG.info { "Mottatt forespørsel på $AZURE_SKJERMING_PATH for å hente data om bruker skljermet" }
 
-        val ident = call.receive<RequestBody>().ident
-        val barn = call.receive<RequestBody>().barn
+        val res = call.receive<RequestBody>()
+        val ident = res.ident
+        val barn = res.barn
         val response = skjermingService.hentSkjermingInfoMedAzure(ident, barn, call.callId!!)
 
         call.respond(status = HttpStatusCode.OK, message = response)
