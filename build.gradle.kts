@@ -70,7 +70,7 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
-    testImplementation("no.nav.security:mock-oauth2-server:2.1.6")
+    testImplementation("no.nav.security:mock-oauth2-server:2.1.7")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
