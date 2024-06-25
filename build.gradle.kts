@@ -5,7 +5,7 @@ val jacksonVersion = "2.17.1"
 val mockkVersion = "1.13.11"
 val kotestVersion = "5.9.1"
 val felleslibVersion = "0.0.129"
-val tokenSupportVersion = "4.1.8"
+val tokenSupportVersion = "5.0.1"
 
 plugins {
     application
