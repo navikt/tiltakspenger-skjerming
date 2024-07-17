@@ -1,3 +1,5 @@
+# Dette repo arkiveres da vi gjør kallet direkte fra vedtak i stedet
+
 tiltakspenger-skjerming
 ================
 
